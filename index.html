@@ -1,0 +1,268 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Form Suara</title>
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --bg: #0d0d14; --surface: #16162a; --border: #2a2a45;
+      --accent: #7c6bff; --accent2: #ff6b9d; --text: #e8e8f0;
+      --muted: #888899; --success: #4ade80; --error: #f87171; --rec: #ff4757;
+    }
+    html, body { height: 100%; background: var(--bg); color: var(--text); font-family: 'DM Sans', sans-serif; font-size: 15px; line-height: 1.6; }
+    body::before { content: ''; position: fixed; inset: 0; background: radial-gradient(ellipse 60% 50% at 20% 10%, rgba(124,107,255,.15) 0%, transparent 60%), radial-gradient(ellipse 50% 60% at 80% 85%, rgba(255,107,157,.1) 0%, transparent 55%); pointer-events: none; z-index: 0; }
+    .page { position: relative; z-index: 1; min-height: 100vh; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 40px 16px; }
+    .card { width: 100%; max-width: 560px; background: var(--surface); border: 1px solid var(--border); border-radius: 24px; padding: 44px 40px; box-shadow: 0 24px 80px rgba(0,0,0,.5); animation: slideUp .5s ease; }
+    @keyframes slideUp { from{opacity:0;transform:translateY(28px)} to{opacity:1;transform:translateY(0)} }
+    .header { text-align: center; margin-bottom: 36px; }
+    .logo-ring { width: 64px; height: 64px; margin: 0 auto 18px; border-radius: 50%; background: linear-gradient(135deg, var(--accent), var(--accent2)); display: flex; align-items: center; justify-content: center; font-size: 26px; }
+    h1 { font-family: 'Syne', sans-serif; font-size: 1.75rem; font-weight: 800; letter-spacing: -.02em; background: linear-gradient(90deg, var(--accent), var(--accent2)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
+    .subtitle { color: var(--muted); font-size: .9rem; margin-top: 4px; }
+
+    /* GAS URL config box */
+    .config-box { background: rgba(124,107,255,.08); border: 1px solid rgba(124,107,255,.3); border-radius: 12px; padding: 14px 16px; margin-bottom: 28px; }
+    .config-box label { color: var(--accent); font-size: .75rem; letter-spacing: .06em; text-transform: uppercase; font-weight: 600; margin-bottom: 6px; }
+    .config-box input { background: rgba(0,0,0,.3); border: 1px solid var(--border); border-radius: 8px; color: var(--text); font-family: monospace; font-size: .8rem; padding: 8px 12px; width: 100%; outline: none; }
+    .config-box input:focus { border-color: var(--accent); }
+    .config-hint { font-size: .75rem; color: var(--muted); margin-top: 6px; }
+
+    .field { margin-bottom: 20px; }
+    label { display: block; font-size: .8rem; font-weight: 500; letter-spacing: .06em; text-transform: uppercase; color: var(--muted); margin-bottom: 8px; }
+    input[type="text"], select, textarea { width: 100%; background: rgba(255,255,255,.04); border: 1px solid var(--border); border-radius: 12px; color: var(--text); font-family: 'DM Sans', sans-serif; font-size: .95rem; padding: 13px 16px; outline: none; transition: border-color .2s, box-shadow .2s; }
+    input[type="text"]:focus, select:focus, textarea:focus { border-color: var(--accent); box-shadow: 0 0 0 3px rgba(124,107,255,.18); }
+    select { cursor: pointer; } select option { background: #1e1e35; }
+    .textarea-wrap { position: relative; }
+    textarea { resize: vertical; min-height: 130px; padding-right: 56px; }
+
+    .mic-btn { position: absolute; right: 12px; bottom: 12px; width: 40px; height: 40px; border-radius: 50%; border: none; cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 18px; background: linear-gradient(135deg, var(--accent), var(--accent2)); color: #fff; box-shadow: 0 4px 16px rgba(124,107,255,.4); transition: transform .15s, box-shadow .15s; outline: none; z-index: 2; }
+    .mic-btn:hover { transform: scale(1.1); }
+    .mic-btn.recording { background: linear-gradient(135deg, var(--rec), #ff8c42); animation: pulse 1.2s infinite; }
+    @keyframes pulse { 0%{box-shadow:0 0 0 0 rgba(255,71,87,.5)} 70%{box-shadow:0 0 0 12px rgba(255,71,87,0)} 100%{box-shadow:0 0 0 0 rgba(255,71,87,0)} }
+
+    .status-bar { display: flex; align-items: center; gap: 8px; font-size: .8rem; color: var(--muted); margin-top: 8px; min-height: 20px; transition: color .2s; }
+    .status-bar.active { color: var(--rec); }
+    .status-dot { width: 7px; height: 7px; border-radius: 50%; background: currentColor; flex-shrink: 0; opacity: 0; }
+    .status-bar.active .status-dot { opacity: 1; animation: blink .8s infinite; }
+    @keyframes blink { 0%,100%{opacity:1} 50%{opacity:.2} }
+    .char-counter { text-align: right; font-size: .75rem; color: var(--muted); margin-top: 4px; }
+
+    .submit-btn { width: 100%; padding: 15px; border: none; border-radius: 14px; font-family: 'Syne', sans-serif; font-size: 1rem; font-weight: 700; letter-spacing: .03em; cursor: pointer; background: linear-gradient(135deg, var(--accent) 0%, var(--accent2) 100%); color: #fff; box-shadow: 0 8px 28px rgba(124,107,255,.35); transition: transform .15s, box-shadow .15s, opacity .15s; margin-top: 8px; }
+    .submit-btn:hover:not(:disabled) { transform: translateY(-2px); box-shadow: 0 12px 36px rgba(124,107,255,.5); }
+    .submit-btn:disabled { opacity: .55; cursor: not-allowed; }
+
+    .toast { position: fixed; bottom: 32px; left: 50%; transform: translateX(-50%) translateY(80px); background: #1c1c30; border: 1px solid var(--border); border-radius: 14px; padding: 14px 24px; font-size: .9rem; box-shadow: 0 16px 48px rgba(0,0,0,.5); display: flex; align-items: center; gap: 10px; transition: transform .4s cubic-bezier(.34,1.56,.64,1), opacity .3s; opacity: 0; z-index: 100; min-width: 260px; max-width: 90vw; }
+    .toast.show { transform: translateX(-50%) translateY(0); opacity: 1; }
+    .toast.success { border-color: var(--success); }
+    .toast.error   { border-color: var(--error); }
+    .toast-icon { font-size: 1.2rem; }
+  </style>
+</head>
+<body>
+<div class="page">
+  <div class="card">
+    <div class="header">
+      <div class="logo-ring">🎙️</div>
+      <h1>Form Suara</h1>
+      <p class="subtitle">Ketik atau bicara langsung ke form ini</p>
+    </div>
+
+    <!-- ① Isi URL GAS di sini -->
+    <div class="config-box">
+      <label for="gasUrl">Google Apps Script URL</label>
+      <input type="text" id="gasUrl" placeholder="https://script.google.com/macros/s/XXXX/exec" />
+      <p class="config-hint">💡 Paste URL deployment GAS Anda di atas, lalu isi form di bawah.</p>
+    </div>
+
+    <form id="mainForm" onsubmit="handleSubmit(event)">
+      <div class="field">
+        <label for="nama">Nama</label>
+        <input type="text" id="nama" placeholder="Masukkan nama Anda…" required />
+      </div>
+      <div class="field">
+        <label for="kategori">Kategori</label>
+        <select id="kategori" required>
+          <option value="" disabled selected>Pilih kategori…</option>
+          <option value="Pertanyaan">Pertanyaan</option>
+          <option value="Masukan">Masukan</option>
+          <option value="Keluhan">Keluhan</option>
+          <option value="Laporan">Laporan</option>
+          <option value="Lainnya">Lainnya</option>
+        </select>
+      </div>
+      <div class="field">
+        <label for="pesan">Pesan / Catatan</label>
+        <div class="textarea-wrap">
+          <textarea id="pesan" placeholder="Ketik pesan Anda di sini, atau tekan 🎙 untuk bicara…" maxlength="2000" required></textarea>
+          <button type="button" class="mic-btn" id="micBtn" title="Klik untuk mulai bicara">🎙</button>
+        </div>
+        <div class="status-bar" id="statusBar">
+          <span class="status-dot"></span>
+          <span id="statusText">Tekan 🎙 untuk mulai merekam suara</span>
+        </div>
+        <div class="char-counter"><span id="charCount">0</span> / 2000</div>
+      </div>
+      <button type="submit" class="submit-btn" id="submitBtn">Kirim Data →</button>
+    </form>
+  </div>
+</div>
+
+<div class="toast" id="toast">
+  <span class="toast-icon" id="toastIcon"></span>
+  <span id="toastMsg"></span>
+</div>
+
+<script>
+  // ── Speech Recognition ────────────────────────────────────
+  const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
+  let recognition = null;
+  let isRecording  = false;
+  let inputMethod  = "Ketik";
+
+  const micBtn    = document.getElementById("micBtn");
+  const statusBar = document.getElementById("statusBar");
+  const statusText= document.getElementById("statusText");
+  const pesanEl   = document.getElementById("pesan");
+  const charCount = document.getElementById("charCount");
+
+  if (!SR) {
+    statusText.textContent = "⚠️ Browser tidak mendukung. Gunakan Chrome.";
+    micBtn.disabled = true; micBtn.style.opacity = ".4";
+  } else {
+    setupRecognition();
+  }
+
+  function setupRecognition() {
+    recognition = new SR();
+    recognition.lang = "id-ID";
+    recognition.continuous = true;
+    recognition.interimResults = true;
+    let finalTranscript = "";
+
+    recognition.onstart = () => {
+      isRecording = true;
+      finalTranscript = pesanEl.value;
+      micBtn.classList.add("recording");
+      micBtn.textContent = "⏹";
+      statusBar.classList.add("active");
+      statusText.textContent = "Sedang merekam… bicara sekarang";
+      inputMethod = "Suara";
+    };
+
+    recognition.onresult = (ev) => {
+      let interim = "";
+      for (let i = ev.resultIndex; i < ev.results.length; i++) {
+        const t = ev.results[i][0].transcript;
+        if (ev.results[i].isFinal) finalTranscript += t + " ";
+        else interim += t;
+      }
+      pesanEl.value = finalTranscript + interim;
+      charCount.textContent = pesanEl.value.length;
+    };
+
+    recognition.onerror = (ev) => {
+      const msgs = {
+        "not-allowed":   "Izin mikrofon ditolak. Klik ikon kunci di address bar → Allow.",
+        "no-speech":     "Tidak terdeteksi suara. Coba lagi.",
+        "audio-capture": "Mikrofon tidak ditemukan."
+      };
+      isRecording = false;
+      stopUI();
+      showToast("error", "❌", msgs[ev.error] || "Error: " + ev.error);
+    };
+
+    recognition.onend = () => {
+      if (isRecording) { try { recognition.start(); } catch(e){} }
+      else stopUI();
+    };
+  }
+
+  micBtn.addEventListener("click", async () => {
+    if (!recognition) return;
+    if (isRecording) { isRecording = false; recognition.stop(); return; }
+
+    statusText.textContent = "Meminta izin mikrofon…";
+    try {
+      const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+      stream.getTracks().forEach(t => t.stop());
+      recognition.start();
+    } catch (err) {
+      stopUI();
+      const msgs = {
+        "NotAllowedError":       "Izin mikrofon ditolak. Klik ikon kunci di address bar → Allow.",
+        "PermissionDeniedError": "Izin mikrofon ditolak.",
+        "NotFoundError":         "Mikrofon tidak ditemukan di perangkat ini."
+      };
+      showToast("error", "🚫", msgs[err.name] || "Gagal akses mikrofon: " + err.message);
+    }
+  });
+
+  function stopUI() {
+    micBtn.classList.remove("recording");
+    micBtn.textContent = "🎙";
+    statusBar.classList.remove("active");
+    statusText.textContent = "Rekaman dihentikan";
+    setTimeout(() => { statusText.textContent = "Tekan 🎙 untuk mulai merekam suara"; }, 2500);
+  }
+
+  pesanEl.addEventListener("input", () => { charCount.textContent = pesanEl.value.length; });
+
+  // ── Submit via fetch() ke GAS doPost ─────────────────────
+  async function handleSubmit(e) {
+    e.preventDefault();
+    if (isRecording) { isRecording = false; recognition && recognition.stop(); }
+
+    const gasUrl = document.getElementById("gasUrl").value.trim();
+    if (!gasUrl) { showToast("error", "⚠️", "Isi URL Google Apps Script terlebih dahulu!"); return; }
+
+    const submitBtn = document.getElementById("submitBtn");
+    submitBtn.disabled = true;
+    submitBtn.textContent = "Menyimpan…";
+
+    const payload = {
+      nama:     document.getElementById("nama").value.trim(),
+      kategori: document.getElementById("kategori").value,
+      pesan:    pesanEl.value.trim(),
+      metode:   inputMethod
+    };
+
+    try {
+      // GAS doPost tidak support CORS preflight, gunakan no-cors
+      // Tapi kita tidak bisa baca response-nya — cukup pastikan request terkirim
+      await fetch(gasUrl, {
+        method:  "POST",
+        mode:    "no-cors",
+        headers: { "Content-Type": "application/json" },
+        body:    JSON.stringify(payload)
+      });
+
+      showToast("success", "✅", "Data berhasil dikirim ke Google Sheet!");
+      document.getElementById("mainForm").reset();
+      charCount.textContent = "0";
+      inputMethod = "Ketik";
+    } catch (err) {
+      showToast("error", "❌", "Gagal mengirim: " + err.message);
+    } finally {
+      submitBtn.disabled = false;
+      submitBtn.textContent = "Kirim Data →";
+    }
+  }
+
+  // ── Toast ─────────────────────────────────────────────────
+  let toastTimer = null;
+  function showToast(type, icon, msg) {
+    const toast     = document.getElementById("toast");
+    const toastIcon = document.getElementById("toastIcon");
+    const toastMsg  = document.getElementById("toastMsg");
+    toast.className = "toast " + type;
+    toastIcon.textContent = icon;
+    toastMsg.textContent  = msg;
+    toast.classList.add("show");
+    clearTimeout(toastTimer);
+    toastTimer = setTimeout(() => toast.classList.remove("show"), 5000);
+  }
+</script>
+</body>
+</html>
