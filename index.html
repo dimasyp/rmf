@@ -39,13 +39,7 @@
     h1 {
       font-size: 1.5rem;
       font-weight: 700;
-      letter-spacing: -.01em;
       color: #1a1a1a;
-    }
-    .subtitle {
-      color: #666;
-      font-size: .875rem;
-      margin-top: 4px;
     }
 
     /* Config box */
@@ -72,10 +66,7 @@
       color: #444;
     }
     .config-toggle:hover { background: #f0f0f0; }
-    .config-arrow {
-      font-size: .7rem;
-      transition: transform .2s;
-    }
+    .config-arrow { font-size: .7rem; transition: transform .2s; }
     .config-arrow.open { transform: rotate(180deg); }
     .config-body {
       background: #f9f9f9;
@@ -85,6 +76,7 @@
     }
     .config-body.open { display: block; }
     .config-box label {
+      display: block;
       font-size: .75rem;
       font-weight: 700;
       letter-spacing: .05em;
@@ -117,8 +109,7 @@
       color: #444;
       margin-bottom: 6px;
     }
-
-    input[type="text"], select, textarea {
+    input[type="text"], textarea {
       width: 100%;
       background: #fff;
       border: 1px solid #bbb;
@@ -130,14 +121,11 @@
       outline: none;
       transition: border-color .15s;
     }
-    input[type="text"]:focus, select:focus, textarea:focus {
-      border-color: #1a1a1a;
-    }
-    select { cursor: pointer; }
-    textarea { resize: vertical; min-height: 130px; padding-right: 52px; }
+    input[type="text"]:focus, textarea:focus { border-color: #1a1a1a; }
     .textarea-wrap { position: relative; }
+    textarea { resize: vertical; min-height: 130px; padding-right: 52px; }
 
-    /* Mic button */
+    /* Record button */
     .mic-btn {
       position: absolute;
       right: 10px; bottom: 10px;
@@ -150,7 +138,6 @@
       outline: none;
       transition: background .15s;
     }
-    /* Lingkaran record di dalam tombol */
     .mic-btn::after {
       content: '';
       width: 14px; height: 14px;
@@ -175,7 +162,7 @@
       100% { box-shadow: 0 0 0 0   rgba(0,0,0,0); }
     }
 
-    /* Status */
+    /* Status bar */
     .status-bar {
       display: flex; align-items: center; gap: 7px;
       font-size: .8rem; color: #888;
@@ -188,7 +175,6 @@
     }
     .status-bar.active .status-dot { opacity: 1; animation: blink .8s infinite; }
     @keyframes blink { 0%,100%{opacity:1} 50%{opacity:.2} }
-
     .char-counter { text-align: right; font-size: .75rem; color: #999; margin-top: 4px; }
 
     /* Submit */
@@ -219,19 +205,20 @@
       opacity: 0; z-index: 100; min-width: 240px; max-width: 90vw;
     }
     .toast.show { transform: translateX(-50%) translateY(0); opacity: 1; }
-    .toast.success { background: #1a1a1a; border-left: 4px solid #4caf50; }
-    .toast.error   { background: #1a1a1a; border-left: 4px solid #f44336; }
+    .toast.success { border-left: 4px solid #4caf50; }
+    .toast.error   { border-left: 4px solid #f44336; }
   </style>
 </head>
 <body>
 <div class="card">
+
   <div class="header">
     <h1>Performance Feedback</h1>
   </div>
 
-  <!-- GAS URL (collapsible) -->
+  <!-- GAS URL collapsible -->
   <div class="config-box">
-    <button type="button" class="config-toggle" id="configToggle" onclick="toggleConfig()">
+    <button type="button" class="config-toggle" onclick="toggleConfig()">
       <span>⚙ Pengaturan URL</span>
       <span class="config-arrow" id="configArrow">▼</span>
     </button>
@@ -243,12 +230,13 @@
   </div>
 
   <form id="mainForm" onsubmit="handleSubmit(event)">
+
     <div class="field">
       <label for="nama">Nama</label>
       <input type="text" id="nama" placeholder="Masukkan nama Anda…" required />
     </div>
 
-<div class="field">
+    <div class="field">
       <label for="pesan">Pesan / Catatan</label>
       <div class="textarea-wrap">
         <textarea id="pesan" placeholder="Ketik pesan Anda di sini, atau tekan tombol record untuk bicara…" maxlength="2000" required></textarea>
@@ -262,6 +250,7 @@
     </div>
 
     <button type="submit" class="submit-btn" id="submitBtn">Kirim Data</button>
+
   </form>
 </div>
 
@@ -271,6 +260,7 @@
 </div>
 
 <script>
+  // ── Config toggle ─────────────────────────────────────────
   function toggleConfig() {
     const body  = document.getElementById("configBody");
     const arrow = document.getElementById("configArrow");
@@ -278,20 +268,22 @@
     arrow.classList.toggle("open", isOpen);
   }
 
+  // ── Speech Recognition ────────────────────────────────────
   const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
-  let recognition = null;
+  let recognition  = null;
   let isRecording  = false;
   let inputMethod  = "Ketik";
 
   const micBtn    = document.getElementById("micBtn");
   const statusBar = document.getElementById("statusBar");
-  const statusText= document.getElementById("statusText");
+  const statusText = document.getElementById("statusText");
   const pesanEl   = document.getElementById("pesan");
   const charCount = document.getElementById("charCount");
 
   if (!SR) {
-    statusText.textContent = "⚠️ Browser tidak mendukung. Gunakan Chrome.";
-    micBtn.disabled = true; micBtn.style.opacity = ".4";
+    statusText.textContent = "Browser tidak mendukung. Gunakan Chrome.";
+    micBtn.disabled = true;
+    micBtn.style.opacity = ".4";
   } else {
     setupRecognition();
   }
@@ -325,7 +317,7 @@
 
     recognition.onerror = (ev) => {
       const msgs = {
-        "not-allowed":   "Izin mikrofon ditolak. Klik ikon kunci di address bar → Allow.",
+        "not-allowed":   "Izin mikrofon ditolak. Klik ikon kunci di address bar lalu Allow.",
         "no-speech":     "Tidak terdeteksi suara. Coba lagi.",
         "audio-capture": "Mikrofon tidak ditemukan."
       };
@@ -335,7 +327,7 @@
     };
 
     recognition.onend = () => {
-      if (isRecording) { try { recognition.start(); } catch(e){} }
+      if (isRecording) { try { recognition.start(); } catch(e) {} }
       else stopUI();
     };
   }
@@ -354,7 +346,7 @@
       showToast("error", "❌",
         err.name === "NotFoundError"
           ? "Mikrofon tidak ditemukan."
-          : "Izin mikrofon ditolak. Klik ikon kunci di address bar → Allow.");
+          : "Izin mikrofon ditolak. Klik ikon kunci di address bar lalu Allow.");
     }
   });
 
@@ -362,17 +354,26 @@
     micBtn.classList.remove("recording");
     statusBar.classList.remove("active");
     statusText.textContent = "Rekaman dihentikan";
-    setTimeout(() => { statusText.textContent = "Tekan tombol record untuk mulai merekam suara"; }, 2500);
+    setTimeout(() => {
+      statusText.textContent = "Tekan tombol record untuk mulai merekam suara";
+    }, 2500);
   }
 
-  pesanEl.addEventListener("input", () => { charCount.textContent = pesanEl.value.length; });
+  pesanEl.addEventListener("input", () => {
+    charCount.textContent = pesanEl.value.length;
+    if (inputMethod === "Suara" && !isRecording) inputMethod = "Ketik";
+  });
 
+  // ── Submit via URLSearchParams ────────────────────────────
   async function handleSubmit(e) {
     e.preventDefault();
     if (isRecording) { isRecording = false; recognition && recognition.stop(); }
 
     const gasUrl = document.getElementById("gasUrl").value.trim();
-    if (!gasUrl) { showToast("error", "⚠️", "Isi URL Google Apps Script terlebih dahulu!"); return; }
+    if (!gasUrl) {
+      showToast("error", "⚠️", "Buka Pengaturan URL dan isi URL Google Apps Script terlebih dahulu!");
+      return;
+    }
 
     const submitBtn = document.getElementById("submitBtn");
     submitBtn.disabled = true;
@@ -385,12 +386,15 @@
     };
 
     try {
+      // URLSearchParams → Content-Type: application/x-www-form-urlencoded
+      // Format ini dijamin diterima GAS via e.parameter
+      const formData = new URLSearchParams({ payload: JSON.stringify(payload) });
       await fetch(gasUrl, {
-        method:  "POST",
-        mode:    "no-cors",
-        headers: { "Content-Type": "text/plain" },
-        body:    JSON.stringify(payload)
+        method: "POST",
+        mode:   "no-cors",
+        body:   formData
       });
+
       showToast("success", "✅", "Data berhasil dikirim ke Google Sheet!");
       document.getElementById("mainForm").reset();
       charCount.textContent = "0";
@@ -403,6 +407,7 @@
     }
   }
 
+  // ── Toast ─────────────────────────────────────────────────
   let toastTimer = null;
   function showToast(type, icon, msg) {
     const toast = document.getElementById("toast");
