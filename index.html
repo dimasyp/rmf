@@ -4,6 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Performance Feedback</title>
+  <script src="https://accounts.google.com/gsi/client" async defer></script>
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
@@ -36,90 +37,120 @@
       padding-bottom: 20px;
       border-bottom: 2px solid #1a1a1a;
     }
-    h1 {
-      font-size: 1.5rem;
-      font-weight: 700;
-      color: #1a1a1a;
+    h1 { font-size: 1.5rem; font-weight: 700; color: #1a1a1a; }
+
+    /* Login section */
+    #loginSection {
+      text-align: center;
+      padding: 16px 0 8px;
     }
+    .login-desc {
+      font-size: .9rem;
+      color: #555;
+      margin-bottom: 20px;
+    }
+    .login-note {
+      font-size: .8rem;
+      color: #999;
+      margin-top: 14px;
+    }
+    #googleSignInBtn {
+      display: flex;
+      justify-content: center;
+    }
+
+    /* User info bar */
+    #userBar {
+      display: none;
+      align-items: center;
+      justify-content: space-between;
+      background: #f9f9f9;
+      border: 1px solid #d0d0d0;
+      border-radius: 6px;
+      padding: 10px 14px;
+      margin-bottom: 20px;
+      font-size: .85rem;
+    }
+    .user-info { display: flex; align-items: center; gap: 10px; }
+    .user-avatar {
+      width: 32px; height: 32px;
+      border-radius: 50%;
+      border: 1px solid #d0d0d0;
+      object-fit: cover;
+    }
+    .user-avatar-placeholder {
+      width: 32px; height: 32px;
+      border-radius: 50%;
+      background: #1a1a1a;
+      color: #fff;
+      display: flex; align-items: center; justify-content: center;
+      font-size: .8rem; font-weight: 700;
+      flex-shrink: 0;
+    }
+    .user-name { font-weight: 700; color: #1a1a1a; }
+    .user-email { font-size: .75rem; color: #666; }
+    .logout-btn {
+      background: none;
+      border: 1px solid #bbb;
+      border-radius: 4px;
+      padding: 4px 10px;
+      font-size: .75rem;
+      cursor: pointer;
+      color: #555;
+      transition: background .15s;
+      flex-shrink: 0;
+    }
+    .logout-btn:hover { background: #f0f0f0; }
 
     /* Config box */
     .config-box {
       border: 1px solid #d0d0d0;
       border-radius: 6px;
-      margin-bottom: 24px;
+      margin-bottom: 20px;
       overflow: hidden;
     }
     .config-toggle {
-      width: 100%;
-      background: #f9f9f9;
-      border: none;
-      padding: 10px 14px;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      cursor: pointer;
-      font-family: Arial, sans-serif;
-      font-size: .75rem;
-      font-weight: 700;
-      letter-spacing: .05em;
-      text-transform: uppercase;
-      color: #444;
+      width: 100%; background: #f9f9f9; border: none;
+      padding: 10px 14px; display: flex;
+      align-items: center; justify-content: space-between;
+      cursor: pointer; font-family: Arial, sans-serif;
+      font-size: .75rem; font-weight: 700;
+      letter-spacing: .05em; text-transform: uppercase; color: #444;
     }
     .config-toggle:hover { background: #f0f0f0; }
     .config-arrow { font-size: .7rem; transition: transform .2s; }
     .config-arrow.open { transform: rotate(180deg); }
     .config-body {
-      background: #f9f9f9;
-      border-top: 1px solid #d0d0d0;
-      padding: 12px 14px;
-      display: none;
+      background: #f9f9f9; border-top: 1px solid #d0d0d0;
+      padding: 12px 14px; display: none;
     }
     .config-body.open { display: block; }
     .config-box label {
-      display: block;
-      font-size: .75rem;
-      font-weight: 700;
-      letter-spacing: .05em;
-      text-transform: uppercase;
-      color: #444;
-      margin-bottom: 6px;
+      display: block; font-size: .75rem; font-weight: 700;
+      letter-spacing: .05em; text-transform: uppercase;
+      color: #444; margin-bottom: 6px;
     }
     .config-box input {
-      background: #fff;
-      border: 1px solid #bbb;
-      border-radius: 4px;
-      color: #1a1a1a;
-      font-family: monospace;
-      font-size: .8rem;
-      padding: 8px 10px;
-      width: 100%;
-      outline: none;
+      background: #fff; border: 1px solid #bbb; border-radius: 4px;
+      color: #1a1a1a; font-family: monospace; font-size: .8rem;
+      padding: 8px 10px; width: 100%; outline: none;
     }
     .config-box input:focus { border-color: #1a1a1a; }
     .config-hint { font-size: .75rem; color: #888; margin-top: 6px; }
 
-    /* Fields */
+    /* Form */
+    #formSection { display: none; }
     .field { margin-bottom: 18px; }
     label {
-      display: block;
-      font-size: .8rem;
-      font-weight: 700;
-      letter-spacing: .04em;
-      text-transform: uppercase;
-      color: #444;
-      margin-bottom: 6px;
+      display: block; font-size: .8rem; font-weight: 700;
+      letter-spacing: .04em; text-transform: uppercase;
+      color: #444; margin-bottom: 6px;
     }
     input[type="text"], textarea {
-      width: 100%;
-      background: #fff;
-      border: 1px solid #bbb;
-      border-radius: 4px;
-      color: #1a1a1a;
-      font-family: Arial, sans-serif;
-      font-size: .95rem;
-      padding: 10px 12px;
-      outline: none;
-      transition: border-color .15s;
+      width: 100%; background: #fff; border: 1px solid #bbb;
+      border-radius: 4px; color: #1a1a1a;
+      font-family: Arial, sans-serif; font-size: .95rem;
+      padding: 10px 12px; outline: none; transition: border-color .15s;
     }
     input[type="text"]:focus, textarea:focus { border-color: #1a1a1a; }
     .textarea-wrap { position: relative; }
@@ -127,46 +158,30 @@
 
     /* Record button */
     .mic-btn {
-      position: absolute;
-      right: 10px; bottom: 10px;
-      width: 36px; height: 36px;
-      border-radius: 50%;
-      border: 2px solid #1a1a1a;
-      cursor: pointer;
+      position: absolute; right: 10px; bottom: 10px;
+      width: 36px; height: 36px; border-radius: 50%;
+      border: 2px solid #1a1a1a; cursor: pointer;
       display: flex; align-items: center; justify-content: center;
-      background: #1a1a1a;
-      outline: none;
-      transition: background .15s;
+      background: #1a1a1a; outline: none; transition: background .15s;
     }
     .mic-btn::after {
-      content: '';
-      width: 14px; height: 14px;
-      border-radius: 50%;
-      background: #fff;
-      transition: background .15s, transform .15s;
+      content: ''; width: 14px; height: 14px; border-radius: 50%;
+      background: #fff; transition: background .15s, transform .15s;
     }
     .mic-btn:hover { background: #fff; }
     .mic-btn:hover::after { background: #1a1a1a; }
-    .mic-btn.recording {
-      background: #fff;
-      border-color: #1a1a1a;
-      animation: pulse 1.2s infinite;
-    }
-    .mic-btn.recording::after {
-      background: #e53935;
-      transform: scale(1.15);
-    }
+    .mic-btn.recording { background: #fff; border-color: #1a1a1a; animation: pulse 1.2s infinite; }
+    .mic-btn.recording::after { background: #e53935; transform: scale(1.15); }
     @keyframes pulse {
       0%   { box-shadow: 0 0 0 0   rgba(0,0,0,.3); }
       70%  { box-shadow: 0 0 0 10px rgba(0,0,0,0); }
       100% { box-shadow: 0 0 0 0   rgba(0,0,0,0); }
     }
 
-    /* Status bar */
+    /* Status */
     .status-bar {
       display: flex; align-items: center; gap: 7px;
-      font-size: .8rem; color: #888;
-      margin-top: 6px; min-height: 18px;
+      font-size: .8rem; color: #888; margin-top: 6px; min-height: 18px;
     }
     .status-bar.active { color: #1a1a1a; font-weight: 600; }
     .status-dot {
@@ -179,15 +194,11 @@
 
     /* Submit */
     .submit-btn {
-      width: 100%; padding: 12px;
-      border: 2px solid #1a1a1a;
-      border-radius: 4px;
-      font-family: Arial, sans-serif;
-      font-size: .95rem; font-weight: 700;
-      cursor: pointer;
+      width: 100%; padding: 12px; border: 2px solid #1a1a1a;
+      border-radius: 4px; font-family: Arial, sans-serif;
+      font-size: .95rem; font-weight: 700; cursor: pointer;
       background: #1a1a1a; color: #fff;
-      transition: background .15s, color .15s;
-      margin-top: 6px;
+      transition: background .15s, color .15s; margin-top: 6px;
     }
     .submit-btn:hover:not(:disabled) { background: #fff; color: #1a1a1a; }
     .submit-btn:disabled { opacity: .45; cursor: not-allowed; }
@@ -196,9 +207,8 @@
     .toast {
       position: fixed; bottom: 24px; left: 50%;
       transform: translateX(-50%) translateY(70px);
-      background: #1a1a1a; color: #fff;
-      border-radius: 4px; padding: 12px 20px;
-      font-size: .875rem;
+      background: #1a1a1a; color: #fff; border-radius: 4px;
+      padding: 12px 20px; font-size: .875rem;
       display: flex; align-items: center; gap: 8px;
       box-shadow: 0 4px 16px rgba(0,0,0,.2);
       transition: transform .35s ease, opacity .3s;
@@ -216,42 +226,64 @@
     <h1>Performance Feedback</h1>
   </div>
 
-  <!-- GAS URL collapsible -->
-  <div class="config-box">
-    <button type="button" class="config-toggle" onclick="toggleConfig()">
-      <span>⚙ Pengaturan URL</span>
-      <span class="config-arrow" id="configArrow">▼</span>
-    </button>
-    <div class="config-body" id="configBody">
-      <label for="gasUrl">Google Apps Script URL</label>
-      <input type="text" id="gasUrl" placeholder="https://script.google.com/macros/s/XXXX/exec" />
-      <p class="config-hint">💡 Paste URL deployment GAS Anda di atas.</p>
-    </div>
+  <!-- Login Section -->
+  <div id="loginSection">
+    <p class="login-desc">Silakan login dengan akun BPJS Ketenagakerjaan Anda untuk mengakses form ini.</p>
+    <div id="googleSignInBtn"></div>
+    <p class="login-note">Hanya akun @bpjsketenagakerjaan.go.id yang diizinkan.</p>
   </div>
 
-  <form id="mainForm" onsubmit="handleSubmit(event)">
+  <!-- User Bar (tampil setelah login) -->
+  <div id="userBar">
+    <div class="user-info">
+      <div class="user-avatar-placeholder" id="userInitial"></div>
+      <div>
+        <div class="user-name" id="userName"></div>
+        <div class="user-email" id="userEmail"></div>
+      </div>
+    </div>
+    <button class="logout-btn" onclick="handleLogout()">Logout</button>
+  </div>
 
-    <div class="field">
-      <label for="nama">Nama</label>
-      <input type="text" id="nama" placeholder="Masukkan nama Anda…" required />
+  <!-- Form Section (tampil setelah login) -->
+  <div id="formSection">
+
+    <!-- GAS URL collapsible -->
+    <div class="config-box">
+      <button type="button" class="config-toggle" onclick="toggleConfig()">
+        <span>⚙ Pengaturan URL</span>
+        <span class="config-arrow" id="configArrow">▼</span>
+      </button>
+      <div class="config-body" id="configBody">
+        <label for="gasUrl">Google Apps Script URL</label>
+        <input type="text" id="gasUrl" placeholder="https://script.google.com/macros/s/XXXX/exec" />
+        <p class="config-hint">💡 Paste URL deployment GAS Anda di atas.</p>
+      </div>
     </div>
 
-    <div class="field">
-      <label for="pesan">Pesan / Catatan</label>
-      <div class="textarea-wrap">
-        <textarea id="pesan" placeholder="Ketik pesan Anda di sini, atau tekan tombol record untuk bicara…" maxlength="2000" required></textarea>
-        <button type="button" class="mic-btn" id="micBtn" title="Klik untuk mulai merekam"></button>
+    <form id="mainForm" onsubmit="handleSubmit(event)">
+      <div class="field">
+        <label for="nama">Nama</label>
+        <input type="text" id="nama" placeholder="Masukkan nama Anda…" required />
       </div>
-      <div class="status-bar" id="statusBar">
-        <span class="status-dot"></span>
-        <span id="statusText">Tekan tombol record untuk mulai merekam suara</span>
+
+      <div class="field">
+        <label for="pesan">Pesan / Catatan</label>
+        <div class="textarea-wrap">
+          <textarea id="pesan" placeholder="Ketik pesan Anda di sini, atau tekan tombol record untuk bicara…" maxlength="2000" required></textarea>
+          <button type="button" class="mic-btn" id="micBtn" title="Klik untuk mulai merekam"></button>
+        </div>
+        <div class="status-bar" id="statusBar">
+          <span class="status-dot"></span>
+          <span id="statusText">Tekan tombol record untuk mulai merekam suara</span>
+        </div>
+        <div class="char-counter"><span id="charCount">0</span> / 2000</div>
       </div>
-      <div class="char-counter"><span id="charCount">0</span> / 2000</div>
-    </div>
 
-    <button type="submit" class="submit-btn" id="submitBtn">Kirim Data</button>
+      <button type="submit" class="submit-btn" id="submitBtn">Kirim Data</button>
+    </form>
+  </div>
 
-  </form>
 </div>
 
 <div class="toast" id="toast">
@@ -260,6 +292,67 @@
 </div>
 
 <script>
+  // ── Konfigurasi ───────────────────────────────────────────
+  const CLIENT_ID   = "350866418738-vc2g5nrrtgbrr9rnm56v2lgv3t958v9j.apps.googleusercontent.com";
+  const ALLOWED_DOMAIN = "bpjsketenagakerjaan.go.id";
+
+  let idToken      = null;
+  let isRecording  = false;
+  let recognition  = null;
+  let inputMethod  = "Ketik";
+
+  // ── Google Sign-In ────────────────────────────────────────
+  window.onload = () => {
+    google.accounts.id.initialize({
+      client_id: CLIENT_ID,
+      callback:  handleCredentialResponse,
+      hosted_domain: ALLOWED_DOMAIN  // hanya tampilkan akun domain BPJS
+    });
+
+    google.accounts.id.renderButton(
+      document.getElementById("googleSignInBtn"),
+      { theme: "outline", size: "large", width: 280, text: "signin_with" }
+    );
+  };
+
+  function handleCredentialResponse(response) {
+    idToken = response.credential;
+
+    // Decode payload dari JWT (tanpa verifikasi — verifikasi dilakukan di GAS)
+    const payload = JSON.parse(atob(idToken.split(".")[1]));
+    const email   = payload.email || "";
+    const name    = payload.name  || email;
+
+    // Validasi domain di sisi client (double-check, verifikasi utama di GAS)
+    if (!email.endsWith("@" + ALLOWED_DOMAIN)) {
+      showToast("error", "🚫", "Akun tidak diizinkan. Gunakan akun @" + ALLOWED_DOMAIN);
+      idToken = null;
+      return;
+    }
+
+    // Tampilkan user bar & form
+    document.getElementById("userInitial").textContent = name.charAt(0).toUpperCase();
+    document.getElementById("userName").textContent    = name;
+    document.getElementById("userEmail").textContent   = email;
+    document.getElementById("userBar").style.display   = "flex";
+    document.getElementById("loginSection").style.display = "none";
+    document.getElementById("formSection").style.display  = "block";
+    document.getElementById("nama").value = name;
+
+    setupRecognition();
+  }
+
+  function handleLogout() {
+    idToken = null;
+    google.accounts.id.disableAutoSelect();
+    document.getElementById("userBar").style.display      = "none";
+    document.getElementById("loginSection").style.display = "block";
+    document.getElementById("formSection").style.display  = "none";
+    document.getElementById("mainForm").reset();
+    document.getElementById("charCount").textContent = "0";
+    if (isRecording) { isRecording = false; recognition && recognition.stop(); }
+  }
+
   // ── Config toggle ─────────────────────────────────────────
   function toggleConfig() {
     const body  = document.getElementById("configBody");
@@ -270,25 +363,20 @@
 
   // ── Speech Recognition ────────────────────────────────────
   const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
-  let recognition  = null;
-  let isRecording  = false;
-  let inputMethod  = "Ketik";
 
-  const micBtn    = document.getElementById("micBtn");
-  const statusBar = document.getElementById("statusBar");
+  const micBtn     = document.getElementById("micBtn");
+  const statusBar  = document.getElementById("statusBar");
   const statusText = document.getElementById("statusText");
-  const pesanEl   = document.getElementById("pesan");
-  const charCount = document.getElementById("charCount");
+  const pesanEl    = document.getElementById("pesan");
+  const charCount  = document.getElementById("charCount");
 
   if (!SR) {
     statusText.textContent = "Browser tidak mendukung. Gunakan Chrome.";
-    micBtn.disabled = true;
-    micBtn.style.opacity = ".4";
-  } else {
-    setupRecognition();
+    micBtn.disabled = true; micBtn.style.opacity = ".4";
   }
 
   function setupRecognition() {
+    if (!SR) return;
     recognition = new SR();
     recognition.lang = "id-ID";
     recognition.continuous = true;
@@ -335,7 +423,6 @@
   micBtn.addEventListener("click", async () => {
     if (!recognition) return;
     if (isRecording) { isRecording = false; recognition.stop(); return; }
-
     statusText.textContent = "Meminta izin mikrofon…";
     try {
       const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
@@ -364,9 +451,10 @@
     if (inputMethod === "Suara" && !isRecording) inputMethod = "Ketik";
   });
 
-  // ── Submit via URLSearchParams ────────────────────────────
+  // ── Submit ────────────────────────────────────────────────
   async function handleSubmit(e) {
     e.preventDefault();
+    if (!idToken) { showToast("error", "🚫", "Sesi habis. Silakan login ulang."); return; }
     if (isRecording) { isRecording = false; recognition && recognition.stop(); }
 
     const gasUrl = document.getElementById("gasUrl").value.trim();
@@ -380,14 +468,13 @@
     submitBtn.textContent = "Menyimpan…";
 
     const payload = {
-      nama:   document.getElementById("nama").value.trim(),
-      pesan:  pesanEl.value.trim(),
-      metode: inputMethod
+      nama:    document.getElementById("nama").value.trim(),
+      pesan:   pesanEl.value.trim(),
+      metode:  inputMethod,
+      idToken: idToken   // kirim token ke GAS untuk diverifikasi
     };
 
     try {
-      // URLSearchParams → Content-Type: application/x-www-form-urlencoded
-      // Format ini dijamin diterima GAS via e.parameter
       const formData = new URLSearchParams({ payload: JSON.stringify(payload) });
       await fetch(gasUrl, {
         method: "POST",
@@ -396,7 +483,7 @@
       });
 
       showToast("success", "✅", "Data berhasil dikirim ke Google Sheet!");
-      document.getElementById("mainForm").reset();
+      pesanEl.value = "";
       charCount.textContent = "0";
       inputMethod = "Ketik";
     } catch (err) {
