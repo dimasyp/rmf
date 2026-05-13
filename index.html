@@ -7,17 +7,8 @@
   <script src="https://accounts.google.com/gsi/client" async defer></script>
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-    body {
-      background: #f5f5f5; color: #1a1a1a;
-      font-family: Arial, sans-serif; font-size: 15px; line-height: 1.6;
-      min-height: 100vh; display: flex;
-      align-items: flex-start; justify-content: center; padding: 32px 16px;
-    }
-    .card {
-      width: 100%; max-width: 600px; background: #fff;
-      border: 1px solid #d0d0d0; border-radius: 8px;
-      padding: 36px 32px; box-shadow: 0 2px 8px rgba(0,0,0,.08);
-    }
+    body { background: #f5f5f5; color: #1a1a1a; font-family: Arial, sans-serif; font-size: 15px; line-height: 1.6; min-height: 100vh; display: flex; align-items: flex-start; justify-content: center; padding: 32px 16px; }
+    .card { width: 100%; max-width: 600px; background: #fff; border: 1px solid #d0d0d0; border-radius: 8px; padding: 36px 32px; box-shadow: 0 2px 8px rgba(0,0,0,.08); }
     .header { text-align: center; margin-bottom: 28px; padding-bottom: 20px; border-bottom: 2px solid #1a1a1a; }
     h1 { font-size: 1.5rem; font-weight: 700; }
     h2 { font-size: 1.1rem; font-weight: 700; margin-bottom: 20px; padding-bottom: 10px; border-bottom: 1px solid #e0e0e0; }
@@ -30,10 +21,11 @@
     .config-arrow.open { transform: rotate(180deg); }
     .config-body { background: #f9f9f9; border-top: 1px solid #d0d0d0; padding: 12px 14px; display: none; }
     .config-body.open { display: block; }
-    .config-body label { display: block; font-size: .75rem; font-weight: 700; letter-spacing: .05em; text-transform: uppercase; color: #444; margin-bottom: 6px; }
+    .config-body label { display: block; font-size: .75rem; font-weight: 700; letter-spacing: .05em; text-transform: uppercase; color: #444; margin-bottom: 6px; margin-top: 10px; }
+    .config-body label:first-child { margin-top: 0; }
     .config-body input { background: #fff; border: 1px solid #bbb; border-radius: 4px; color: #1a1a1a; font-family: monospace; font-size: .8rem; padding: 8px 10px; width: 100%; outline: none; }
     .config-body input:focus { border-color: #1a1a1a; }
-    .config-hint { font-size: .75rem; color: #888; margin-top: 6px; }
+    .config-hint { font-size: .75rem; color: #888; margin-top: 4px; }
 
     /* Login */
     #loginSection { text-align: center; padding: 24px 0; }
@@ -74,7 +66,7 @@
     .readonly-field { background: #f9f9f9; border: 1px solid #e0e0e0; border-radius: 4px; padding: 10px 12px; font-size: .95rem; min-height: 44px; }
     .predikat-badge { display: inline-block; padding: 3px 14px; border-radius: 4px; font-weight: 700; font-size: 1rem; background: #1a1a1a; color: #fff; }
 
-    /* Textarea + mic */
+    /* Mic */
     .textarea-wrap { position: relative; }
     .with-mic { padding-right: 52px !important; }
     .mic-btn { position: absolute; right: 10px; bottom: 10px; width: 36px; height: 36px; border-radius: 50%; border: 2px solid #1a1a1a; cursor: pointer; display: flex; align-items: center; justify-content: center; background: #1a1a1a; outline: none; }
@@ -90,7 +82,7 @@
     .status-bar.active .status-dot { opacity: 1; animation: blink .8s infinite; }
     @keyframes blink { 0%,100%{opacity:1} 50%{opacity:.2} }
 
-    /* Upload foto */
+    /* Upload */
     .upload-area { border: 2px dashed #bbb; border-radius: 6px; padding: 20px; text-align: center; cursor: pointer; transition: border-color .15s; position: relative; overflow: hidden; }
     .upload-area:hover { border-color: #1a1a1a; }
     .upload-area input[type="file"] { position: absolute; inset: 0; opacity: 0; cursor: pointer; width: 100%; height: 100%; }
@@ -98,7 +90,7 @@
     .upload-preview { margin-top: 10px; display: none; }
     .upload-preview img { max-width: 100%; max-height: 200px; border-radius: 4px; border: 1px solid #e0e0e0; }
 
-    /* Submit */
+    /* Button */
     .submit-btn { width: 100%; padding: 12px; border: 2px solid #1a1a1a; border-radius: 4px; font-family: Arial, sans-serif; font-size: .95rem; font-weight: 700; cursor: pointer; background: #1a1a1a; color: #fff; transition: background .15s, color .15s; margin-top: 8px; }
     .submit-btn:hover:not(:disabled) { background: #fff; color: #1a1a1a; }
     .submit-btn:disabled { opacity: .45; cursor: not-allowed; }
@@ -112,7 +104,6 @@
     .toast.error   { border-left: 4px solid #f44336; }
   </style>
 </head>
-
 <body>
 <div class="card">
   <div class="header"><h1>Performance Feedback</h1></div>
@@ -124,9 +115,12 @@
       <span class="config-arrow" id="configArrow">▼</span>
     </button>
     <div class="config-body" id="configBody">
-      <label for="scriptId">Script ID (bukan Deployment ID)</label>
-      <input type="text" id="scriptId" placeholder="Contoh: 1FAIpQLSe..." />
-      <p class="config-hint">💡 Buka GAS → Project Settings → Script ID</p>
+      <label for="cfgSheetId">Spreadsheet ID</label>
+      <input type="text" id="cfgSheetId" placeholder="1BxiMVs0XRA5nFMdKvBdBZjgmUUqptlbs74OgVE2upms" />
+      <p class="config-hint">💡 Dari URL sheet: docs.google.com/spreadsheets/d/<strong>ID_INI</strong>/edit</p>
+      <label for="cfgDriveFolder">Google Drive Folder ID (untuk foto)</label>
+      <input type="text" id="cfgDriveFolder" placeholder="ID folder Drive tempat foto disimpan" />
+      <p class="config-hint">💡 Dari URL folder Drive: drive.google.com/drive/folders/<strong>ID_INI</strong></p>
     </div>
   </div>
 
@@ -151,9 +145,9 @@
 
   <!-- Main -->
   <div id="mainSection">
-    <div class="tabs" id="tabsBar">
+    <div class="tabs" id="tabsBar" style="display:none">
       <button class="tab-btn active" id="tabAtasanBtn" onclick="switchTab('atasan')">Sebagai Atasan</button>
-      <button class="tab-btn" id="tabBawahanBtn" onclick="switchTab('bawahan')">Sebagai Bawahan</button>
+      <button class="tab-btn"        id="tabBawahanBtn" onclick="switchTab('bawahan')">Sebagai Bawahan</button>
     </div>
 
     <!-- TAB ATASAN -->
@@ -211,16 +205,37 @@
   // ══════════════════════════════════════════
   const CLIENT_ID      = "350866418738-vc2g5nrrtgbrr9rnm56v2lgv3t958v9j.apps.googleusercontent.com";
   const ALLOWED_DOMAIN = "bpjsketenagakerjaan.go.id";
+  const SCOPES         = [
+    "openid email profile",
+    "https://www.googleapis.com/auth/spreadsheets",
+    "https://www.googleapis.com/auth/drive.file"
+  ].join(" ");
 
-  // Scope: spreadsheets (dibutuhkan GAS untuk akses Sheet)
-  const SCOPES = "openid email profile https://www.googleapis.com/auth/spreadsheets https://www.googleapis.com/auth/drive.file";
+  const SHEET_KARYAWAN = "Karyawan";
+  const SHEET_FEEDBACK = "Feedback";
 
   let accessToken     = null;
   let tokenClient     = null;
+  let currentEmail    = "";
+  let currentName     = "";
   let userRole        = null;
   let bawahanList     = [];
   let pilihanBawahan  = null;
   let feedbackBawahan = null;
+
+  // ══════════════════════════════════════════
+  //  Config helpers
+  // ══════════════════════════════════════════
+  const cfg = {
+    sheetId()     { return document.getElementById("cfgSheetId").value.trim(); },
+    driveFolderId(){ return document.getElementById("cfgDriveFolder").value.trim(); }
+  };
+
+  function toggleConfig() {
+    const b = document.getElementById("configBody");
+    const a = document.getElementById("configArrow");
+    a.classList.toggle("open", b.classList.toggle("open"));
+  }
 
   // ══════════════════════════════════════════
   //  Google Sign-In + OAuth Token
@@ -235,7 +250,6 @@
       document.getElementById("googleSignInBtn"),
       { theme: "outline", size: "large", width: 280 }
     );
-
     tokenClient = google.accounts.oauth2.initTokenClient({
       client_id: CLIENT_ID,
       scope:     SCOPES,
@@ -249,24 +263,24 @@
       showToast("error", "🚫", "Akses ditolak. Gunakan akun @" + ALLOWED_DOMAIN);
       return;
     }
-    document.getElementById("userInitial").textContent = (p.name || "?").charAt(0).toUpperCase();
-    document.getElementById("userName").textContent    = p.name  || "";
-    document.getElementById("userEmail").textContent   = p.email || "";
+    currentEmail = p.email;
+    currentName  = p.name || p.email;
+    document.getElementById("userInitial").textContent = currentName.charAt(0).toUpperCase();
+    document.getElementById("userName").textContent    = currentName;
+    document.getElementById("userEmail").textContent   = currentEmail;
     document.getElementById("userBar").style.display   = "flex";
     document.getElementById("loginSection").style.display = "none";
-
-    // Minta access token untuk panggil Execution API
     tokenClient.requestAccessToken({ prompt: "" });
   }
 
   function handleTokenResponse(resp) {
-    if (resp.error) { showToast("error", "❌", "Gagal mendapat token: " + resp.error); return; }
+    if (resp.error) { showToast("error", "❌", "Gagal mendapat akses: " + resp.error); return; }
     accessToken = resp.access_token;
     loadRole();
   }
 
   function handleLogout() {
-    accessToken = null; userRole = null;
+    accessToken = null; userRole = null; currentEmail = "";
     google.accounts.id.disableAutoSelect();
     document.getElementById("userBar").style.display      = "none";
     document.getElementById("mainSection").style.display  = "none";
@@ -274,62 +288,76 @@
   }
 
   // ══════════════════════════════════════════
-  //  Panggil GAS via Execution API
-  //  (ini yang menggantikan fetch ke Web App)
+  //  Sheets API helpers
   // ══════════════════════════════════════════
-  async function callGAS(functionName, params = null) {
-    const scriptId = document.getElementById("scriptId").value.trim();
-    if (!scriptId) throw new Error("Script ID belum diisi di Pengaturan.");
-    if (!accessToken) throw new Error("Belum login.");
-
-    const body = { function: functionName, devMode: false };
-    if (params !== null) body.parameters = [params];
-
+  async function sheetsGet(range) {
+    const id  = cfg.sheetId();
+    if (!id) throw new Error("Spreadsheet ID belum diisi di Pengaturan.");
     const res = await fetch(
-      `https://script.googleapis.com/v1/scripts/${scriptId}:run`,
+      `https://sheets.googleapis.com/v4/spreadsheets/${id}/values/${encodeURIComponent(range)}`,
+      { headers: { Authorization: "Bearer " + accessToken } }
+    );
+    if (!res.ok) {
+      if (res.status === 401) { tokenClient.requestAccessToken({ prompt: "" }); throw new Error("Sesi expired, silakan coba lagi."); }
+      throw new Error("Sheets API error: " + res.status);
+    }
+    return (await res.json()).values || [];
+  }
+
+  async function sheetsAppend(sheetName, values) {
+    const id  = cfg.sheetId();
+    if (!id) throw new Error("Spreadsheet ID belum diisi di Pengaturan.");
+    const res = await fetch(
+      `https://sheets.googleapis.com/v4/spreadsheets/${id}/values/${encodeURIComponent(sheetName + "!A1")}:append?valueInputOption=USER_ENTERED&insertDataOption=INSERT_ROWS`,
       {
         method:  "POST",
-        headers: {
-          "Authorization": "Bearer " + accessToken,
-          "Content-Type":  "application/json"
-        },
-        body: JSON.stringify(body)
+        headers: { Authorization: "Bearer " + accessToken, "Content-Type": "application/json" },
+        body:    JSON.stringify({ values })
       }
     );
+    if (!res.ok) throw new Error("Gagal simpan data: " + res.status);
+    return res.json();
+  }
 
-    const json = await res.json();
-
-    if (!res.ok) {
-      // Token expired → minta ulang
-      if (res.status === 401) {
-        tokenClient.requestAccessToken({ prompt: "" });
-        throw new Error("Sesi expired, silakan coba lagi.");
+  async function sheetsUpdate(range, values) {
+    const id  = cfg.sheetId();
+    const res = await fetch(
+      `https://sheets.googleapis.com/v4/spreadsheets/${id}/values/${encodeURIComponent(range)}?valueInputOption=USER_ENTERED`,
+      {
+        method:  "PUT",
+        headers: { Authorization: "Bearer " + accessToken, "Content-Type": "application/json" },
+        body:    JSON.stringify({ values })
       }
-      throw new Error(JSON.stringify(json.error || json));
-    }
+    );
+    if (!res.ok) throw new Error("Gagal update data: " + res.status);
+    return res.json();
+  }
 
-    if (json.error) {
-      throw new Error(json.error.details?.[0]?.errorMessage || JSON.stringify(json.error));
-    }
-
-    return json.response?.result;
+  async function sheetsGetAll(sheetName) {
+    return sheetsGet(sheetName + "!A2:Z");
   }
 
   // ══════════════════════════════════════════
-  //  Config toggle
-  // ══════════════════════════════════════════
-  function toggleConfig() {
-    const b = document.getElementById("configBody");
-    const a = document.getElementById("configArrow");
-    a.classList.toggle("open", b.classList.toggle("open"));
-  }
-
-  // ══════════════════════════════════════════
-  //  Load role
+  //  Deteksi peran
   // ══════════════════════════════════════════
   async function loadRole() {
+    if (!cfg.sheetId()) {
+      document.getElementById("configBody").classList.add("open");
+      document.getElementById("configArrow").classList.add("open");
+      showToast("error", "⚙️", "Isi Spreadsheet ID di Pengaturan terlebih dahulu.");
+      return;
+    }
     try {
-      userRole = await callGAS("getRole");
+      const rows      = await sheetsGetAll(SHEET_KARYAWAN);
+      const email     = currentEmail.toLowerCase().trim();
+      let isAtasan = false, isBawahan = false;
+
+      rows.forEach(r => {
+        if ((r[2] || "").toLowerCase().trim() === email) isAtasan  = true;
+        if ((r[5] || "").toLowerCase().trim() === email) isBawahan = true;
+      });
+
+      userRole = { isAtasan, isBawahan, rows };
       setupMainSection();
     } catch(err) {
       showToast("error", "❌", "Gagal memuat data: " + err.message);
@@ -337,49 +365,55 @@
   }
 
   function setupMainSection() {
-    document.getElementById("mainSection").style.display = "block";
+    const ms = document.getElementById("mainSection");
+    ms.style.display = "block";
     const { isAtasan, isBawahan } = userRole;
 
     if (!isAtasan && !isBawahan) {
-      document.getElementById("mainSection").innerHTML =
-        `<div class="alert alert-warning">⚠️ Akun Anda tidak terdaftar dalam sistem. Hubungi HR.</div>`;
+      ms.innerHTML = `<div class="alert alert-warning">⚠️ Akun Anda tidak terdaftar dalam sistem. Hubungi HR.</div>`;
       return;
     }
 
-    document.getElementById("tabAtasanBtn").style.display  = isAtasan ? "" : "none";
+    document.getElementById("tabAtasanBtn").style.display  = isAtasan  ? "" : "none";
     document.getElementById("tabBawahanBtn").style.display = isBawahan ? "" : "none";
     document.getElementById("tabsBar").style.display       = (isAtasan && isBawahan) ? "flex" : "none";
 
-    if (isAtasan)  { switchTab("atasan"); loadBawahanList(); }
-    if (isBawahan) { loadFeedbackBawahan(); }
+    if (isAtasan)             { switchTab("atasan"); loadBawahanList(); }
+    if (isBawahan)            { loadFeedbackBawahan(); }
     if (!isAtasan && isBawahan) switchTab("bawahan");
 
     setupMic("micBtnAtasan", "pesanAtasan", "statusBarAtasan", "statusTextAtasan");
   }
 
   function switchTab(tab) {
-    ["atasan","bawahan"].forEach(t => {
-      document.getElementById("tab" + t.charAt(0).toUpperCase() + t.slice(1))
-              .classList.toggle("active", t === tab);
-      document.getElementById("tab" + t.charAt(0).toUpperCase() + t.slice(1) + "Btn")
-              .classList.toggle("active", t === tab);
-    });
+    document.getElementById("tabAtasan").classList.toggle("active",  tab === "atasan");
+    document.getElementById("tabBawahan").classList.toggle("active", tab === "bawahan");
+    document.getElementById("tabAtasanBtn").classList.toggle("active",  tab === "atasan");
+    document.getElementById("tabBawahanBtn").classList.toggle("active", tab === "bawahan");
   }
 
   // ══════════════════════════════════════════
   //  Form Atasan
   // ══════════════════════════════════════════
-  async function loadBawahanList() {
-    try {
-      bawahanList = await callGAS("getBawahan");
-      const sel = document.getElementById("selectBawahan");
-      bawahanList.forEach(b => {
-        const o = document.createElement("option");
-        o.value = b.emailBawahan;
-        o.textContent = b.namaBawahan + " — " + b.kodeUnit;
-        sel.appendChild(o);
-      });
-    } catch(err) { showToast("error", "❌", err.message); }
+  function loadBawahanList() {
+    const email = currentEmail.toLowerCase().trim();
+    bawahanList = (userRole.rows || [])
+      .filter(r => (r[2] || "").toLowerCase().trim() === email)
+      .map(r => ({
+        npkBawahan:   r[3] || "",
+        namaBawahan:  r[4] || "",
+        emailBawahan: r[5] || "",
+        predikat:     r[6] || "",
+        kodeUnit:     r[7] || ""
+      }));
+
+    const sel = document.getElementById("selectBawahan");
+    bawahanList.forEach(b => {
+      const o = document.createElement("option");
+      o.value = b.emailBawahan;
+      o.textContent = b.namaBawahan + (b.kodeUnit ? " — " + b.kodeUnit : "");
+      sel.appendChild(o);
+    });
   }
 
   function onPilihBawahan() {
@@ -389,9 +423,7 @@
     ["fieldPredikat","fieldPesan","fieldFoto","submitAtasanBtn"].forEach(id => {
       document.getElementById(id).style.display = show ? "" : "none";
     });
-    if (pilihanBawahan) {
-      document.getElementById("labelPredikat").textContent = pilihanBawahan.predikat || "-";
-    }
+    if (pilihanBawahan) document.getElementById("labelPredikat").textContent = pilihanBawahan.predikat || "-";
   }
 
   function previewFoto(input) {
@@ -413,53 +445,74 @@
     if (!fotoFile) { showToast("error", "⚠️", "Foto bukti wajib diupload."); return; }
 
     const btn = document.getElementById("submitAtasanBtn");
-    btn.disabled = true;
-    btn.innerHTML = '<span class="spinner"></span>Menyimpan…';
+    btn.disabled = true; btn.innerHTML = '<span class="spinner"></span>Menyimpan…';
 
     try {
-      // Upload foto ke Google Drive via Drive API
+      // Cek duplikat aktif
+      const feedbacks = await sheetsGetAll(SHEET_FEEDBACK);
+      const duplikat  = feedbacks.some(r =>
+        (r[7] || "").toLowerCase().trim() === pilihanBawahan.emailBawahan.toLowerCase() &&
+        (r[13] || "") === "Menunggu Bawahan"
+      );
+      if (duplikat) throw new Error("Masih ada feedback aktif untuk bawahan ini yang belum diselesaikan.");
+
+      // Upload foto ke Drive
       const fotoUrl = await uploadFotoDrive(fotoFile);
 
-      await callGAS("submitAtasan", {
-        npkBawahan:   pilihanBawahan.npkBawahan,
-        namaBawahan:  pilihanBawahan.namaBawahan,
-        emailBawahan: pilihanBawahan.emailBawahan,
-        predikat:     pilihanBawahan.predikat,
-        pesanAtasan:  pesan,
-        fotoUrl:      fotoUrl
-      });
+      // Cari NPK & nama atasan dari sheet karyawan
+      const email = currentEmail.toLowerCase().trim();
+      const atasanRow = (userRole.rows || []).find(r => (r[2] || "").toLowerCase().trim() === email);
+      const npkAtasan  = atasanRow ? atasanRow[0] : "";
+      const namaAtasan = atasanRow ? atasanRow[1] : currentName;
+
+      const idSesi = "SESI-" + Date.now();
+      const now    = new Date().toLocaleString("id-ID", { timeZone: "Asia/Jakarta" });
+
+      await sheetsAppend(SHEET_FEEDBACK, [[
+        idSesi, now,
+        npkAtasan, namaAtasan, currentEmail,
+        pilihanBawahan.npkBawahan, pilihanBawahan.namaBawahan, pilihanBawahan.emailBawahan,
+        pilihanBawahan.predikat, pesan, fotoUrl,
+        "", "", "Menunggu Bawahan"
+      ]]);
 
       showToast("success", "✅", "Feedback berhasil dikirim!");
       document.getElementById("selectBawahan").value = "";
-      document.getElementById("pesanAtasan").value = "";
+      document.getElementById("pesanAtasan").value   = "";
       document.getElementById("uploadPreview").style.display = "none";
-      document.getElementById("inputFoto").value = "";
+      document.getElementById("inputFoto").value     = "";
       onPilihBawahan();
     } catch(err) {
       showToast("error", "❌", err.message);
     } finally {
-      btn.disabled = false;
-      btn.innerHTML = "Submit Feedback";
+      btn.disabled = false; btn.innerHTML = "Submit Feedback";
     }
   }
 
   async function uploadFotoDrive(file) {
-    const metadata = JSON.stringify({ name: "feedback_" + Date.now() + "_" + file.name });
+    const folderId = cfg.driveFolderId();
+    const metadata = { name: "feedback_" + Date.now() + "_" + file.name };
+    if (folderId) metadata.parents = [folderId];
+
     const form = new FormData();
-    form.append("metadata", new Blob([metadata], { type: "application/json" }));
+    form.append("metadata", new Blob([JSON.stringify(metadata)], { type: "application/json" }));
     form.append("file", file);
 
     const res = await fetch(
       "https://www.googleapis.com/upload/drive/v3/files?uploadType=multipart&fields=id,webViewLink",
-      {
-        method:  "POST",
-        headers: { "Authorization": "Bearer " + accessToken },
-        body:    form
-      }
+      { method: "POST", headers: { Authorization: "Bearer " + accessToken }, body: form }
     );
     if (!res.ok) throw new Error("Gagal upload foto: " + res.status);
     const data = await res.json();
-    return data.webViewLink || "https://drive.google.com/file/d/" + data.id + "/view";
+
+    // Set file agar bisa diakses siapapun di organisasi
+    await fetch(`https://www.googleapis.com/drive/v3/files/${data.id}/permissions`, {
+      method: "POST",
+      headers: { Authorization: "Bearer " + accessToken, "Content-Type": "application/json" },
+      body: JSON.stringify({ role: "reader", type: "domain", domain: ALLOWED_DOMAIN })
+    });
+
+    return data.webViewLink || `https://drive.google.com/file/d/${data.id}/view`;
   }
 
   // ══════════════════════════════════════════
@@ -467,17 +520,37 @@
   // ══════════════════════════════════════════
   async function loadFeedbackBawahan() {
     try {
-      feedbackBawahan = await callGAS("getFeedbackBawahan");
+      const rows  = await sheetsGetAll(SHEET_FEEDBACK);
+      const email = currentEmail.toLowerCase().trim();
+
+      // Cari feedback terbaru dengan status "Menunggu Bawahan"
+      for (let i = rows.length - 1; i >= 0; i--) {
+        const r = rows[i];
+        if ((r[7] || "").toLowerCase().trim() === email && (r[13] || "") === "Menunggu Bawahan") {
+          feedbackBawahan = {
+            rowIndex:    i + 2, // +2 karena header di baris 1, data mulai baris 2
+            idSesi:      r[0],
+            namaAtasan:  r[3],
+            tglAtasan:   r[1],
+            predikat:    r[8],
+            pesanAtasan: r[9],
+            fotoUrl:     r[10]
+          };
+          renderFormBawahan();
+          return;
+        }
+      }
+      feedbackBawahan = null;
       renderFormBawahan();
     } catch(err) {
       document.getElementById("bawahanContent").innerHTML =
-        `<div class="alert alert-warning">❌ ${err.message}</div>`;
+        `<div class="alert alert-warning">❌ Gagal memuat: ${err.message}</div>`;
     }
   }
 
   function renderFormBawahan() {
     const cont = document.getElementById("bawahanContent");
-    if (!feedbackBawahan?.ada) {
+    if (!feedbackBawahan) {
       cont.innerHTML = `<div class="alert alert-warning">⏳ <strong>Belum ada feedback dari atasan.</strong><br>Silakan tunggu atasan Anda melakukan submit terlebih dahulu.</div>`;
       return;
     }
@@ -512,17 +585,18 @@
     const komitmen = document.getElementById("komitmenBawahan").value.trim();
     if (!komitmen) { showToast("error", "⚠️", "Komitmen tidak boleh kosong."); return; }
     const btn = document.getElementById("submitBawahanBtn");
-    btn.disabled = true;
-    btn.innerHTML = '<span class="spinner"></span>Menyimpan…';
+    btn.disabled = true; btn.innerHTML = '<span class="spinner"></span>Menyimpan…';
     try {
-      await callGAS("submitBawahan", { idSesi: feedbackBawahan.idSesi, komitmen });
+      const now = new Date().toLocaleString("id-ID", { timeZone: "Asia/Jakarta" });
+      // Update kolom L (Tgl Bawahan), M (Komitmen), N (Status) pada baris yang sesuai
+      const row = feedbackBawahan.rowIndex;
+      await sheetsUpdate(`${SHEET_FEEDBACK}!L${row}:N${row}`, [[now, komitmen, "Selesai"]]);
       showToast("success", "✅", "Komitmen berhasil disimpan!");
       document.getElementById("bawahanContent").innerHTML =
         `<div class="alert alert-success">✅ <strong>Terima kasih!</strong> Proses feedback selesai.</div>`;
     } catch(err) {
       showToast("error", "❌", err.message);
-      btn.disabled = false;
-      btn.innerHTML = "Submit Komitmen";
+      btn.disabled = false; btn.innerHTML = "Submit Komitmen";
     }
   }
 
@@ -583,22 +657,6 @@
     clearTimeout(toastTimer);
     toastTimer = setTimeout(() => t.classList.remove("show"), 5000);
   }
-</script>
-<!-- DEBUG: hapus setelah selesai testing -->
-<button onclick="showToken()" style="position:fixed;bottom:10px;right:10px;padding:8px 12px;background:#555;color:#fff;border:none;border-radius:4px;cursor:pointer;font-size:12px;">
-  🔑 Lihat Token
-</button>
-<script>
-function showToken() {
-  if (!accessToken) { alert("Belum login!"); return; }
-  const box = document.createElement("textarea");
-  box.value = accessToken;
-  box.style = "position:fixed;top:10px;left:10px;right:10px;height:120px;z-index:9999;font-size:11px;padding:8px;";
-  document.body.appendChild(box);
-  box.select();
-  document.execCommand("copy");
-  alert("Token berhasil dicopy ke clipboard!");
-}
 </script>
 </body>
 </html>
