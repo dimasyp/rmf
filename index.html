@@ -7,156 +7,105 @@
   <script src="https://accounts.google.com/gsi/client" async defer></script>
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-
     body {
-      background: #f5f5f5;
-      color: #1a1a1a;
-      font-family: Arial, sans-serif;
-      font-size: 15px;
-      line-height: 1.6;
-      min-height: 100vh;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      padding: 32px 16px;
+      background: #f5f5f5; color: #1a1a1a;
+      font-family: Arial, sans-serif; font-size: 15px; line-height: 1.6;
+      min-height: 100vh; display: flex; align-items: flex-start;
+      justify-content: center; padding: 32px 16px;
     }
-
     .card {
-      width: 100%;
-      max-width: 540px;
-      background: #ffffff;
-      border: 1px solid #d0d0d0;
-      border-radius: 8px;
-      padding: 36px 32px;
-      box-shadow: 0 2px 8px rgba(0,0,0,.08);
+      width: 100%; max-width: 600px; background: #fff;
+      border: 1px solid #d0d0d0; border-radius: 8px;
+      padding: 36px 32px; box-shadow: 0 2px 8px rgba(0,0,0,.08);
     }
-
     .header {
-      text-align: center;
-      margin-bottom: 28px;
-      padding-bottom: 20px;
-      border-bottom: 2px solid #1a1a1a;
+      text-align: center; margin-bottom: 28px;
+      padding-bottom: 20px; border-bottom: 2px solid #1a1a1a;
     }
-    h1 { font-size: 1.5rem; font-weight: 700; color: #1a1a1a; }
+    h1 { font-size: 1.5rem; font-weight: 700; }
+    h2 { font-size: 1.1rem; font-weight: 700; margin-bottom: 20px; padding-bottom: 10px; border-bottom: 1px solid #e0e0e0; }
 
-    /* Login section */
-    #loginSection {
-      text-align: center;
-      padding: 16px 0 8px;
-    }
-    .login-desc {
-      font-size: .9rem;
-      color: #555;
-      margin-bottom: 20px;
-    }
-    .login-note {
-      font-size: .8rem;
-      color: #999;
-      margin-top: 14px;
-    }
-    #googleSignInBtn {
-      display: flex;
-      justify-content: center;
-    }
+    /* Login */
+    #loginSection { text-align: center; padding: 24px 0; }
+    .login-desc { font-size: .9rem; color: #555; margin-bottom: 20px; }
+    .login-note { font-size: .8rem; color: #999; margin-top: 14px; }
+    #googleSignInBtn { display: flex; justify-content: center; }
 
-    /* User info bar */
+    /* User bar */
     #userBar {
-      display: none;
-      align-items: center;
-      justify-content: space-between;
-      background: #f9f9f9;
-      border: 1px solid #d0d0d0;
-      border-radius: 6px;
-      padding: 10px 14px;
-      margin-bottom: 20px;
-      font-size: .85rem;
+      display: none; align-items: center; justify-content: space-between;
+      background: #f9f9f9; border: 1px solid #d0d0d0; border-radius: 6px;
+      padding: 10px 14px; margin-bottom: 20px; font-size: .85rem;
     }
     .user-info { display: flex; align-items: center; gap: 10px; }
     .user-avatar {
-      width: 32px; height: 32px;
-      border-radius: 50%;
-      border: 1px solid #d0d0d0;
-      object-fit: cover;
-    }
-    .user-avatar-placeholder {
-      width: 32px; height: 32px;
-      border-radius: 50%;
-      background: #1a1a1a;
-      color: #fff;
+      width: 32px; height: 32px; border-radius: 50%;
+      background: #1a1a1a; color: #fff;
       display: flex; align-items: center; justify-content: center;
-      font-size: .8rem; font-weight: 700;
-      flex-shrink: 0;
+      font-size: .8rem; font-weight: 700; flex-shrink: 0;
     }
-    .user-name { font-weight: 700; color: #1a1a1a; }
+    .user-name { font-weight: 700; }
     .user-email { font-size: .75rem; color: #666; }
     .logout-btn {
-      background: none;
-      border: 1px solid #bbb;
-      border-radius: 4px;
-      padding: 4px 10px;
-      font-size: .75rem;
-      cursor: pointer;
-      color: #555;
-      transition: background .15s;
-      flex-shrink: 0;
+      background: none; border: 1px solid #bbb; border-radius: 4px;
+      padding: 4px 10px; font-size: .75rem; cursor: pointer; color: #555;
     }
     .logout-btn:hover { background: #f0f0f0; }
 
-    /* Config box */
-    .config-box {
-      border: 1px solid #d0d0d0;
-      border-radius: 6px;
-      margin-bottom: 20px;
-      overflow: hidden;
+    /* Tabs */
+    #mainSection { display: none; }
+    .tabs { display: flex; border-bottom: 2px solid #1a1a1a; margin-bottom: 24px; }
+    .tab-btn {
+      padding: 10px 20px; border: none; background: none;
+      font-family: Arial, sans-serif; font-size: .9rem; font-weight: 700;
+      cursor: pointer; color: #888; border-bottom: 3px solid transparent;
+      margin-bottom: -2px; transition: color .15s;
     }
-    .config-toggle {
-      width: 100%; background: #f9f9f9; border: none;
-      padding: 10px 14px; display: flex;
-      align-items: center; justify-content: space-between;
-      cursor: pointer; font-family: Arial, sans-serif;
-      font-size: .75rem; font-weight: 700;
-      letter-spacing: .05em; text-transform: uppercase; color: #444;
-    }
-    .config-toggle:hover { background: #f0f0f0; }
-    .config-arrow { font-size: .7rem; transition: transform .2s; }
-    .config-arrow.open { transform: rotate(180deg); }
-    .config-body {
-      background: #f9f9f9; border-top: 1px solid #d0d0d0;
-      padding: 12px 14px; display: none;
-    }
-    .config-body.open { display: block; }
-    .config-box label {
-      display: block; font-size: .75rem; font-weight: 700;
-      letter-spacing: .05em; text-transform: uppercase;
-      color: #444; margin-bottom: 6px;
-    }
-    .config-box input {
-      background: #fff; border: 1px solid #bbb; border-radius: 4px;
-      color: #1a1a1a; font-family: monospace; font-size: .8rem;
-      padding: 8px 10px; width: 100%; outline: none;
-    }
-    .config-box input:focus { border-color: #1a1a1a; }
-    .config-hint { font-size: .75rem; color: #888; margin-top: 6px; }
+    .tab-btn.active { color: #1a1a1a; border-bottom-color: #1a1a1a; }
+    .tab-content { display: none; }
+    .tab-content.active { display: block; }
 
-    /* Form */
-    #formSection { display: none; }
+    /* Alert box */
+    .alert {
+      padding: 14px 16px; border-radius: 6px;
+      font-size: .875rem; margin-bottom: 16px;
+    }
+    .alert-warning { background: #fff8e1; border: 1px solid #ffc107; color: #7a5c00; }
+    .alert-info    { background: #e8f4fd; border: 1px solid #90caf9; color: #0d47a1; }
+    .alert-success { background: #e8f5e9; border: 1px solid #a5d6a7; color: #1b5e20; }
+
+    /* Form fields */
     .field { margin-bottom: 18px; }
     label {
       display: block; font-size: .8rem; font-weight: 700;
       letter-spacing: .04em; text-transform: uppercase;
       color: #444; margin-bottom: 6px;
     }
-    input[type="text"], textarea {
+    input[type="text"], select, textarea {
       width: 100%; background: #fff; border: 1px solid #bbb;
       border-radius: 4px; color: #1a1a1a;
       font-family: Arial, sans-serif; font-size: .95rem;
       padding: 10px 12px; outline: none; transition: border-color .15s;
     }
-    input[type="text"]:focus, textarea:focus { border-color: #1a1a1a; }
-    .textarea-wrap { position: relative; }
-    textarea { resize: vertical; min-height: 130px; padding-right: 52px; }
+    input:focus, select:focus, textarea:focus { border-color: #1a1a1a; }
+    select { cursor: pointer; }
+    textarea { resize: vertical; min-height: 130px; }
 
-    /* Record button */
+    /* Readonly field */
+    .readonly-field {
+      background: #f9f9f9; border: 1px solid #e0e0e0;
+      border-radius: 4px; padding: 10px 12px;
+      font-size: .95rem; color: #1a1a1a; min-height: 44px;
+    }
+    .predikat-badge {
+      display: inline-block; padding: 3px 12px;
+      border-radius: 4px; font-weight: 700; font-size: 1rem;
+      background: #1a1a1a; color: #fff;
+    }
+
+    /* Textarea + mic */
+    .textarea-wrap { position: relative; }
+    .textarea-with-mic { padding-right: 52px !important; }
     .mic-btn {
       position: absolute; right: 10px; bottom: 10px;
       width: 36px; height: 36px; border-radius: 50%;
@@ -170,15 +119,13 @@
     }
     .mic-btn:hover { background: #fff; }
     .mic-btn:hover::after { background: #1a1a1a; }
-    .mic-btn.recording { background: #fff; border-color: #1a1a1a; animation: pulse 1.2s infinite; }
+    .mic-btn.recording { background: #fff; animation: pulse 1.2s infinite; }
     .mic-btn.recording::after { background: #e53935; transform: scale(1.15); }
     @keyframes pulse {
       0%   { box-shadow: 0 0 0 0   rgba(0,0,0,.3); }
       70%  { box-shadow: 0 0 0 10px rgba(0,0,0,0); }
       100% { box-shadow: 0 0 0 0   rgba(0,0,0,0); }
     }
-
-    /* Status */
     .status-bar {
       display: flex; align-items: center; gap: 7px;
       font-size: .8rem; color: #888; margin-top: 6px; min-height: 18px;
@@ -190,18 +137,46 @@
     }
     .status-bar.active .status-dot { opacity: 1; animation: blink .8s infinite; }
     @keyframes blink { 0%,100%{opacity:1} 50%{opacity:.2} }
-    .char-counter { text-align: right; font-size: .75rem; color: #999; margin-top: 4px; }
 
-    /* Submit */
+    /* Upload foto */
+    .upload-area {
+      border: 2px dashed #bbb; border-radius: 6px;
+      padding: 20px; text-align: center; cursor: pointer;
+      transition: border-color .15s; position: relative;
+    }
+    .upload-area:hover { border-color: #1a1a1a; }
+    .upload-area input[type="file"] {
+      position: absolute; inset: 0; opacity: 0; cursor: pointer; width: 100%;
+    }
+    .upload-label { font-size: .875rem; color: #888; }
+    .upload-preview {
+      margin-top: 10px; display: none;
+    }
+    .upload-preview img {
+      max-width: 100%; max-height: 200px;
+      border-radius: 4px; border: 1px solid #e0e0e0;
+    }
+
+    /* Submit button */
     .submit-btn {
       width: 100%; padding: 12px; border: 2px solid #1a1a1a;
       border-radius: 4px; font-family: Arial, sans-serif;
       font-size: .95rem; font-weight: 700; cursor: pointer;
       background: #1a1a1a; color: #fff;
-      transition: background .15s, color .15s; margin-top: 6px;
+      transition: background .15s, color .15s; margin-top: 8px;
     }
     .submit-btn:hover:not(:disabled) { background: #fff; color: #1a1a1a; }
     .submit-btn:disabled { opacity: .45; cursor: not-allowed; }
+
+    /* Loading spinner */
+    .spinner {
+      display: inline-block; width: 16px; height: 16px;
+      border: 2px solid rgba(255,255,255,.4);
+      border-top-color: #fff; border-radius: 50%;
+      animation: spin .7s linear infinite; margin-right: 8px;
+      vertical-align: middle;
+    }
+    @keyframes spin { to { transform: rotate(360deg); } }
 
     /* Toast */
     .toast {
@@ -217,26 +192,57 @@
     .toast.show { transform: translateX(-50%) translateY(0); opacity: 1; }
     .toast.success { border-left: 4px solid #4caf50; }
     .toast.error   { border-left: 4px solid #f44336; }
+
+    /* GAS config */
+    .config-box { border: 1px solid #d0d0d0; border-radius: 6px; margin-bottom: 20px; overflow: hidden; }
+    .config-toggle {
+      width: 100%; background: #f9f9f9; border: none; padding: 10px 14px;
+      display: flex; align-items: center; justify-content: space-between;
+      cursor: pointer; font-family: Arial, sans-serif;
+      font-size: .75rem; font-weight: 700; letter-spacing: .05em;
+      text-transform: uppercase; color: #444;
+    }
+    .config-toggle:hover { background: #f0f0f0; }
+    .config-arrow { font-size: .7rem; transition: transform .2s; }
+    .config-arrow.open { transform: rotate(180deg); }
+    .config-body { background: #f9f9f9; border-top: 1px solid #d0d0d0; padding: 12px 14px; display: none; }
+    .config-body.open { display: block; }
+    .config-body label { font-size: .75rem; font-weight: 700; letter-spacing: .05em; text-transform: uppercase; color: #444; margin-bottom: 6px; }
+    .config-body input { background: #fff; border: 1px solid #bbb; border-radius: 4px; color: #1a1a1a; font-family: monospace; font-size: .8rem; padding: 8px 10px; width: 100%; outline: none; }
+    .config-body input:focus { border-color: #1a1a1a; }
+    .config-hint { font-size: .75rem; color: #888; margin-top: 6px; }
   </style>
 </head>
 <body>
 <div class="card">
-
   <div class="header">
     <h1>Performance Feedback</h1>
   </div>
 
-  <!-- Login Section -->
+  <!-- Pengaturan GAS URL -->
+  <div class="config-box">
+    <button type="button" class="config-toggle" onclick="toggleConfig()">
+      <span>⚙ Pengaturan</span>
+      <span class="config-arrow" id="configArrow">▼</span>
+    </button>
+    <div class="config-body" id="configBody">
+      <label for="gasUrl">Google Apps Script URL</label>
+      <input type="text" id="gasUrl" placeholder="https://script.google.com/macros/s/XXXX/exec" />
+      <p class="config-hint">💡 Paste URL deployment GAS Anda.</p>
+    </div>
+  </div>
+
+  <!-- Login -->
   <div id="loginSection">
-    <p class="login-desc">Silakan login dengan akun BPJS Ketenagakerjaan Anda untuk mengakses form ini.</p>
+    <p class="login-desc">Silakan login dengan akun BPJS Ketenagakerjaan Anda.</p>
     <div id="googleSignInBtn"></div>
     <p class="login-note">Hanya akun @bpjsketenagakerjaan.go.id yang diizinkan.</p>
   </div>
 
-  <!-- User Bar (tampil setelah login) -->
+  <!-- User bar -->
   <div id="userBar">
     <div class="user-info">
-      <div class="user-avatar-placeholder" id="userInitial"></div>
+      <div class="user-avatar" id="userInitial"></div>
       <div>
         <div class="user-name" id="userName"></div>
         <div class="user-email" id="userEmail"></div>
@@ -245,45 +251,67 @@
     <button class="logout-btn" onclick="handleLogout()">Logout</button>
   </div>
 
-  <!-- Form Section (tampil setelah login) -->
-  <div id="formSection">
-
-    <!-- GAS URL collapsible -->
-    <div class="config-box">
-      <button type="button" class="config-toggle" onclick="toggleConfig()">
-        <span>⚙ Pengaturan URL</span>
-        <span class="config-arrow" id="configArrow">▼</span>
-      </button>
-      <div class="config-body" id="configBody">
-        <label for="gasUrl">Google Apps Script URL</label>
-        <input type="text" id="gasUrl" placeholder="https://script.google.com/macros/s/XXXX/exec" />
-        <p class="config-hint">💡 Paste URL deployment GAS Anda di atas.</p>
-      </div>
+  <!-- Main section dengan tabs -->
+  <div id="mainSection">
+    <div class="tabs" id="tabsBar">
+      <button class="tab-btn active" id="tabAtasanBtn" onclick="switchTab('atasan')">Sebagai Atasan</button>
+      <button class="tab-btn" id="tabBawahanBtn" onclick="switchTab('bawahan')">Sebagai Bawahan</button>
     </div>
 
-    <form id="mainForm" onsubmit="handleSubmit(event)">
-      <div class="field">
-        <label for="nama">Nama</label>
-        <input type="text" id="nama" placeholder="Masukkan nama Anda…" required />
-      </div>
+    <!-- TAB ATASAN -->
+    <div class="tab-content active" id="tabAtasan">
+      <h2>Form Feedback Atasan</h2>
 
       <div class="field">
-        <label for="pesan">Pesan / Catatan</label>
+        <label>Pilih Bawahan</label>
+        <select id="selectBawahan" onchange="onPilihBawahan()">
+          <option value="">-- Pilih nama bawahan --</option>
+        </select>
+      </div>
+
+      <div class="field" id="fieldPredikat" style="display:none">
+        <label>Predikat Kinerja</label>
+        <div class="readonly-field">
+          <span class="predikat-badge" id="labelPredikat">-</span>
+        </div>
+      </div>
+
+      <div class="field" id="fieldPesan" style="display:none">
+        <label>Pesan / Feedback</label>
         <div class="textarea-wrap">
-          <textarea id="pesan" placeholder="Ketik pesan Anda di sini, atau tekan tombol record untuk bicara…" maxlength="2000" required></textarea>
-          <button type="button" class="mic-btn" id="micBtn" title="Klik untuk mulai merekam"></button>
+          <textarea id="pesanAtasan" class="textarea-with-mic" placeholder="Ketik feedback Anda, atau tekan tombol record untuk bicara…" maxlength="3000"></textarea>
+          <button type="button" class="mic-btn" id="micBtnAtasan" title="Klik untuk merekam"></button>
         </div>
-        <div class="status-bar" id="statusBar">
+        <div class="status-bar" id="statusBarAtasan">
           <span class="status-dot"></span>
-          <span id="statusText">Tekan tombol record untuk mulai merekam suara</span>
+          <span id="statusTextAtasan">Tekan tombol record untuk mulai merekam</span>
         </div>
-        <div class="char-counter"><span id="charCount">0</span> / 2000</div>
       </div>
 
-      <button type="submit" class="submit-btn" id="submitBtn">Kirim Data</button>
-    </form>
-  </div>
+      <div class="field" id="fieldFoto" style="display:none">
+        <label>Foto Bukti</label>
+        <div class="upload-area" id="uploadArea">
+          <input type="file" id="inputFoto" accept="image/*" onchange="previewFoto(this)" />
+          <p class="upload-label">📷 Klik untuk pilih foto atau drag & drop di sini</p>
+        </div>
+        <div class="upload-preview" id="uploadPreview">
+          <img id="previewImg" src="" alt="Preview" />
+        </div>
+      </div>
 
+      <button class="submit-btn" id="submitAtasanBtn" style="display:none" onclick="submitAtasan()">
+        Submit Feedback
+      </button>
+    </div>
+
+    <!-- TAB BAWAHAN -->
+    <div class="tab-content" id="tabBawahan">
+      <h2>Form Komitmen Bawahan</h2>
+      <div id="bawahanContent">
+        <div class="alert alert-info">⏳ Memuat data feedback…</div>
+      </div>
+    </div>
+  </div>
 </div>
 
 <div class="toast" id="toast">
@@ -292,209 +320,460 @@
 </div>
 
 <script>
-  // ── Konfigurasi ───────────────────────────────────────────
-  const CLIENT_ID   = "350866418738-vc2g5nrrtgbrr9rnm56v2lgv3t958v9j.apps.googleusercontent.com";
+  // ══════════════════════════════════════════════════════════
+  //  KONFIGURASI
+  // ══════════════════════════════════════════════════════════
+  const CLIENT_ID      = "350866418738-vc2g5nrrtgbrr9rnm56v2lgv3t958v9j.apps.googleusercontent.com";
   const ALLOWED_DOMAIN = "bpjsketenagakerjaan.go.id";
 
-  let idToken      = null;
-  let isRecording  = false;
-  let recognition  = null;
-  let inputMethod  = "Ketik";
+  let idToken     = null;
+  let userRole    = null;
+  let bawahanList = [];
+  let pilihanBawahan = null;
+  let feedbackBawahan = null;
+  let isRecording = false;
+  let recognition = null;
 
-  // ── Google Sign-In ────────────────────────────────────────
+  // ══════════════════════════════════════════════════════════
+  //  Google Sign-In
+  // ══════════════════════════════════════════════════════════
   window.onload = () => {
     google.accounts.id.initialize({
-      client_id: CLIENT_ID,
-      callback:  handleCredentialResponse,
-      hosted_domain: ALLOWED_DOMAIN  // hanya tampilkan akun domain BPJS
+      client_id:     CLIENT_ID,
+      callback:      handleCredentialResponse,
+      hosted_domain: ALLOWED_DOMAIN
     });
-
     google.accounts.id.renderButton(
       document.getElementById("googleSignInBtn"),
-      { theme: "outline", size: "large", width: 280, text: "signin_with" }
+      { theme: "outline", size: "large", width: 280 }
     );
   };
 
   function handleCredentialResponse(response) {
-    idToken = response.credential;
-
-    // Decode payload dari JWT (tanpa verifikasi — verifikasi dilakukan di GAS)
-    const payload = JSON.parse(atob(idToken.split(".")[1]));
+    const payload = JSON.parse(atob(response.credential.split(".")[1]));
     const email   = payload.email || "";
     const name    = payload.name  || email;
 
-    // Validasi domain di sisi client (double-check, verifikasi utama di GAS)
     if (!email.endsWith("@" + ALLOWED_DOMAIN)) {
-      showToast("error", "🚫", "Akun tidak diizinkan. Gunakan akun @" + ALLOWED_DOMAIN);
-      idToken = null;
+      showToast("error", "🚫", "Akses ditolak. Gunakan akun @" + ALLOWED_DOMAIN);
       return;
     }
 
-    // Tampilkan user bar & form
+    idToken = response.credential;
+
+    // Tampilkan user bar
     document.getElementById("userInitial").textContent = name.charAt(0).toUpperCase();
     document.getElementById("userName").textContent    = name;
     document.getElementById("userEmail").textContent   = email;
     document.getElementById("userBar").style.display   = "flex";
     document.getElementById("loginSection").style.display = "none";
-    document.getElementById("formSection").style.display  = "block";
-    document.getElementById("nama").value = name;
 
-    setupRecognition();
+    // Ambil role dari GAS
+    loadRole();
   }
 
   function handleLogout() {
-    idToken = null;
+    idToken = null; userRole = null;
     google.accounts.id.disableAutoSelect();
     document.getElementById("userBar").style.display      = "none";
+    document.getElementById("mainSection").style.display  = "none";
     document.getElementById("loginSection").style.display = "block";
-    document.getElementById("formSection").style.display  = "none";
-    document.getElementById("mainForm").reset();
-    document.getElementById("charCount").textContent = "0";
     if (isRecording) { isRecording = false; recognition && recognition.stop(); }
   }
 
-  // ── Config toggle ─────────────────────────────────────────
+  // ══════════════════════════════════════════════════════════
+  //  Config toggle
+  // ══════════════════════════════════════════════════════════
   function toggleConfig() {
     const body  = document.getElementById("configBody");
     const arrow = document.getElementById("configArrow");
-    const isOpen = body.classList.toggle("open");
-    arrow.classList.toggle("open", isOpen);
+    arrow.classList.toggle("open", body.classList.toggle("open"));
   }
 
-  // ── Speech Recognition ────────────────────────────────────
+  function getGasUrl() {
+    return document.getElementById("gasUrl").value.trim();
+  }
+
+  // ══════════════════════════════════════════════════════════
+  //  API call ke GAS
+  // ══════════════════════════════════════════════════════════
+  async function callGAS(action, params = {}) {
+    const gasUrl = getGasUrl();
+    if (!gasUrl) throw new Error("GAS URL belum diisi di Pengaturan.");
+
+    const query = new URLSearchParams({
+      action,
+      token: idToken,
+      ...params
+    });
+
+    const res = await fetch(gasUrl + "?" + query.toString(), {
+      method: "GET"
+    });
+
+    const text = await res.text();
+    let json;
+    try { json = JSON.parse(text); }
+    catch(e) { throw new Error("Response tidak valid dari GAS: " + text.substring(0, 100)); }
+
+    if (!json.success) throw new Error(json.message || "Terjadi kesalahan");
+    return json.data;
+  }
+
+  // ══════════════════════════════════════════════════════════
+  //  Load role user
+  // ══════════════════════════════════════════════════════════
+  async function loadRole() {
+    try {
+      userRole = await callGAS("getRole");
+      setupMainSection();
+    } catch(err) {
+      showToast("error", "❌", "Gagal memuat data: " + err.message);
+    }
+  }
+
+  function setupMainSection() {
+    const ms = document.getElementById("mainSection");
+    ms.style.display = "block";
+
+    const tabsBar       = document.getElementById("tabsBar");
+    const tabAtasanBtn  = document.getElementById("tabAtasanBtn");
+    const tabBawahanBtn = document.getElementById("tabBawahanBtn");
+
+    if (userRole.isAtasan && userRole.isBawahan) {
+      // Kedua tab tampil
+      tabsBar.style.display = "flex";
+      loadBawahanList();
+      loadFeedbackBawahan();
+    } else if (userRole.isAtasan) {
+      // Hanya tab atasan
+      tabAtasanBtn.style.display  = "block";
+      tabBawahanBtn.style.display = "none";
+      switchTab("atasan");
+      loadBawahanList();
+    } else if (userRole.isBawahan) {
+      // Hanya tab bawahan
+      tabAtasanBtn.style.display  = "none";
+      tabBawahanBtn.style.display = "block";
+      tabsBar.style.display = "none";
+      switchTab("bawahan");
+      loadFeedbackBawahan();
+    } else {
+      ms.innerHTML = `<div class="alert alert-warning">⚠️ Akun Anda tidak terdaftar dalam sistem. Hubungi HR.</div>`;
+    }
+
+    setupMic("micBtnAtasan", "pesanAtasan", "statusBarAtasan", "statusTextAtasan");
+  }
+
+  // ══════════════════════════════════════════════════════════
+  //  Tab switching
+  // ══════════════════════════════════════════════════════════
+  function switchTab(tab) {
+    document.getElementById("tabAtasan").classList.toggle("active", tab === "atasan");
+    document.getElementById("tabBawahan").classList.toggle("active", tab === "bawahan");
+    document.getElementById("tabAtasanBtn").classList.toggle("active", tab === "atasan");
+    document.getElementById("tabBawahanBtn").classList.toggle("active", tab === "bawahan");
+  }
+
+  // ══════════════════════════════════════════════════════════
+  //  Form Atasan
+  // ══════════════════════════════════════════════════════════
+  async function loadBawahanList() {
+    try {
+      bawahanList = await callGAS("getBawahan");
+      const sel = document.getElementById("selectBawahan");
+      bawahanList.forEach(b => {
+        const opt = document.createElement("option");
+        opt.value = b.emailBawahan;
+        opt.textContent = b.namaBawahan + " (" + b.kodeUnit + ")";
+        sel.appendChild(opt);
+      });
+    } catch(err) {
+      showToast("error", "❌", "Gagal load daftar bawahan: " + err.message);
+    }
+  }
+
+  function onPilihBawahan() {
+    const email = document.getElementById("selectBawahan").value;
+    pilihanBawahan = bawahanList.find(b => b.emailBawahan === email) || null;
+
+    const show = !!pilihanBawahan;
+    document.getElementById("fieldPredikat").style.display  = show ? "block" : "none";
+    document.getElementById("fieldPesan").style.display     = show ? "block" : "none";
+    document.getElementById("fieldFoto").style.display      = show ? "block" : "none";
+    document.getElementById("submitAtasanBtn").style.display = show ? "block" : "none";
+
+    if (pilihanBawahan) {
+      document.getElementById("labelPredikat").textContent = pilihanBawahan.predikat || "-";
+    }
+  }
+
+  function previewFoto(input) {
+    const file = input.files[0];
+    if (!file) return;
+    const reader = new FileReader();
+    reader.onload = e => {
+      document.getElementById("previewImg").src = e.target.result;
+      document.getElementById("uploadPreview").style.display = "block";
+    };
+    reader.readAsDataURL(file);
+  }
+
+  async function submitAtasan() {
+    if (!pilihanBawahan) { showToast("error", "⚠️", "Pilih bawahan terlebih dahulu."); return; }
+    const pesan = document.getElementById("pesanAtasan").value.trim();
+    if (!pesan) { showToast("error", "⚠️", "Pesan feedback tidak boleh kosong."); return; }
+
+    const fotoFile = document.getElementById("inputFoto").files[0];
+    if (!fotoFile) { showToast("error", "⚠️", "Foto bukti wajib diupload."); return; }
+
+    const btn = document.getElementById("submitAtasanBtn");
+    btn.disabled = true;
+    btn.innerHTML = '<span class="spinner"></span>Menyimpan…';
+
+    try {
+      // Upload foto ke GAS (base64)
+      const base64 = await toBase64(fotoFile);
+      const fotoUrl = await uploadFoto(base64, fotoFile.name, fotoFile.type);
+
+      // Submit feedback
+      const payload = JSON.parse(atob(idToken.split(".")[1]));
+      await callGAS("submitAtasan", {
+        npkAtasan:    payload.sub || "",
+        namaAtasan:   payload.name || "",
+        npkBawahan:   pilihanBawahan.npkBawahan,
+        namaBawahan:  pilihanBawahan.namaBawahan,
+        emailBawahan: pilihanBawahan.emailBawahan,
+        predikat:     pilihanBawahan.predikat,
+        pesanAtasan:  pesan,
+        fotoUrl:      fotoUrl
+      });
+
+      showToast("success", "✅", "Feedback berhasil dikirim!");
+
+      // Reset form
+      document.getElementById("selectBawahan").value = "";
+      document.getElementById("pesanAtasan").value = "";
+      document.getElementById("uploadPreview").style.display = "none";
+      document.getElementById("inputFoto").value = "";
+      onPilihBawahan();
+
+    } catch(err) {
+      showToast("error", "❌", err.message);
+    } finally {
+      btn.disabled = false;
+      btn.innerHTML = "Submit Feedback";
+    }
+  }
+
+  // Upload foto via GAS
+  async function uploadFoto(base64, fileName, mimeType) {
+    const gasUrl = getGasUrl();
+    const formData = new URLSearchParams({
+      action:   "uploadFoto",
+      token:    idToken,
+      base64:   base64,
+      fileName: fileName,
+      mimeType: mimeType
+    });
+    const res  = await fetch(gasUrl, { method: "POST", mode: "no-cors", body: formData });
+    // Karena no-cors kita tidak bisa baca response
+    // Workaround: kirim via GET dengan base64 (tapi terlalu panjang)
+    // Solusi: gunakan Google Drive API langsung dari browser
+    return await uploadFotoDriveAPI(base64, fileName, mimeType);
+  }
+
+  async function uploadFotoDriveAPI(base64, fileName, mimeType) {
+    // Convert base64 ke blob
+    const byteChars = atob(base64);
+    const byteArr   = new Uint8Array(byteChars.length);
+    for (let i = 0; i < byteChars.length; i++) byteArr[i] = byteChars.charCodeAt(i);
+    const blob = new Blob([byteArr], { type: mimeType });
+
+    const metadata = JSON.stringify({ name: fileName, mimeType });
+    const form     = new FormData();
+    form.append("metadata", new Blob([metadata], { type: "application/json" }));
+    form.append("file", blob);
+
+    // Butuh access token Drive — tampilkan pesan dulu
+    throw new Error("Upload foto membutuhkan konfigurasi tambahan. Fitur akan segera tersedia.");
+  }
+
+  function toBase64(file) {
+    return new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      reader.onload  = () => resolve(reader.result.split(",")[1]);
+      reader.onerror = reject;
+      reader.readAsDataURL(file);
+    });
+  }
+
+  // ══════════════════════════════════════════════════════════
+  //  Form Bawahan
+  // ══════════════════════════════════════════════════════════
+  async function loadFeedbackBawahan() {
+    try {
+      feedbackBawahan = await callGAS("getFeedbackBawahan");
+      renderFormBawahan();
+    } catch(err) {
+      document.getElementById("bawahanContent").innerHTML =
+        `<div class="alert alert-warning">❌ Gagal memuat: ${err.message}</div>`;
+    }
+  }
+
+  function renderFormBawahan() {
+    const cont = document.getElementById("bawahanContent");
+    if (!feedbackBawahan || !feedbackBawahan.ada) {
+      cont.innerHTML = `
+        <div class="alert alert-warning">
+          ⏳ <strong>Belum ada feedback dari atasan.</strong><br>
+          Silakan tunggu atasan Anda melakukan submit feedback terlebih dahulu.
+        </div>`;
+      return;
+    }
+
+    const f = feedbackBawahan;
+    cont.innerHTML = `
+      <div class="alert alert-info">
+        📋 Feedback dari <strong>${f.namaAtasan}</strong> pada ${f.tglAtasan}
+      </div>
+
+      <div class="field">
+        <label>Predikat Kinerja Anda</label>
+        <div class="readonly-field">
+          <span class="predikat-badge">${f.predikat}</span>
+        </div>
+      </div>
+
+      <div class="field">
+        <label>Pesan dari Atasan</label>
+        <div class="readonly-field" style="min-height:100px;white-space:pre-wrap">${f.pesanAtasan}</div>
+      </div>
+
+      ${f.fotoUrl ? `
+      <div class="field">
+        <label>Foto Bukti</label>
+        <div class="readonly-field" style="padding:8px">
+          <a href="${f.fotoUrl}" target="_blank">🖼 Lihat foto bukti</a>
+        </div>
+      </div>` : ""}
+
+      <div class="field">
+        <label>Komitmen Anda</label>
+        <div class="textarea-wrap">
+          <textarea id="komitmenBawahan" class="textarea-with-mic"
+            placeholder="Tulis komitmen Anda setelah menerima feedback ini…"
+            maxlength="3000"></textarea>
+          <button type="button" class="mic-btn" id="micBtnBawahan" title="Klik untuk merekam"></button>
+        </div>
+        <div class="status-bar" id="statusBarBawahan">
+          <span class="status-dot"></span>
+          <span id="statusTextBawahan">Tekan tombol record untuk mulai merekam</span>
+        </div>
+      </div>
+
+      <button class="submit-btn" id="submitBawahanBtn" onclick="submitBawahan()">
+        Submit Komitmen
+      </button>
+    `;
+
+    setupMic("micBtnBawahan", "komitmenBawahan", "statusBarBawahan", "statusTextBawahan");
+  }
+
+  async function submitBawahan() {
+    const komitmen = document.getElementById("komitmenBawahan").value.trim();
+    if (!komitmen) { showToast("error", "⚠️", "Komitmen tidak boleh kosong."); return; }
+
+    const btn = document.getElementById("submitBawahanBtn");
+    btn.disabled = true;
+    btn.innerHTML = '<span class="spinner"></span>Menyimpan…';
+
+    try {
+      await callGAS("submitBawahan", {
+        idSesi:    feedbackBawahan.idSesi,
+        komitmen:  komitmen
+      });
+      showToast("success", "✅", "Komitmen berhasil disimpan!");
+      document.getElementById("bawahanContent").innerHTML = `
+        <div class="alert alert-success">
+          ✅ <strong>Terima kasih!</strong> Komitmen Anda telah berhasil disimpan.
+          Proses feedback selesai.
+        </div>`;
+    } catch(err) {
+      showToast("error", "❌", err.message);
+      btn.disabled = false;
+      btn.innerHTML = "Submit Komitmen";
+    }
+  }
+
+  // ══════════════════════════════════════════════════════════
+  //  Speech Recognition
+  // ══════════════════════════════════════════════════════════
   const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
 
-  const micBtn     = document.getElementById("micBtn");
-  const statusBar  = document.getElementById("statusBar");
-  const statusText = document.getElementById("statusText");
-  const pesanEl    = document.getElementById("pesan");
-  const charCount  = document.getElementById("charCount");
-
-  if (!SR) {
-    statusText.textContent = "Browser tidak mendukung. Gunakan Chrome.";
-    micBtn.disabled = true; micBtn.style.opacity = ".4";
-  }
-
-  function setupRecognition() {
+  function setupMic(micId, textareaId, statusBarId, statusTextId) {
     if (!SR) return;
-    recognition = new SR();
-    recognition.lang = "id-ID";
-    recognition.continuous = true;
-    recognition.interimResults = true;
-    let finalTranscript = "";
+    const micBtn     = document.getElementById(micId);
+    if (!micBtn) return;
+    const statusBar  = document.getElementById(statusBarId);
+    const statusText = document.getElementById(statusTextId);
+    const textarea   = document.getElementById(textareaId);
+    if (!micBtn || !textarea) return;
 
-    recognition.onstart = () => {
-      isRecording = true;
-      finalTranscript = pesanEl.value;
+    let rec = new SR();
+    rec.lang = "id-ID";
+    rec.continuous = true;
+    rec.interimResults = true;
+    let finalTranscript = "";
+    let recIsRecording = false;
+
+    rec.onstart = () => {
+      recIsRecording = true;
+      finalTranscript = textarea.value;
       micBtn.classList.add("recording");
       statusBar.classList.add("active");
       statusText.textContent = "Sedang merekam… bicara sekarang";
-      inputMethod = "Suara";
     };
-
-    recognition.onresult = (ev) => {
+    rec.onresult = (ev) => {
       let interim = "";
       for (let i = ev.resultIndex; i < ev.results.length; i++) {
         const t = ev.results[i][0].transcript;
         if (ev.results[i].isFinal) finalTranscript += t + " ";
         else interim += t;
       }
-      pesanEl.value = finalTranscript + interim;
-      charCount.textContent = pesanEl.value.length;
+      textarea.value = finalTranscript + interim;
+    };
+    rec.onerror = () => {
+      recIsRecording = false;
+      stopMicUI(micBtn, statusBar, statusText);
+    };
+    rec.onend = () => {
+      if (recIsRecording) { try { rec.start(); } catch(e) {} }
+      else stopMicUI(micBtn, statusBar, statusText);
     };
 
-    recognition.onerror = (ev) => {
-      const msgs = {
-        "not-allowed":   "Izin mikrofon ditolak. Klik ikon kunci di address bar lalu Allow.",
-        "no-speech":     "Tidak terdeteksi suara. Coba lagi.",
-        "audio-capture": "Mikrofon tidak ditemukan."
-      };
-      isRecording = false;
-      stopUI();
-      showToast("error", "❌", msgs[ev.error] || "Error: " + ev.error);
-    };
-
-    recognition.onend = () => {
-      if (isRecording) { try { recognition.start(); } catch(e) {} }
-      else stopUI();
-    };
+    micBtn.addEventListener("click", async () => {
+      if (recIsRecording) { recIsRecording = false; rec.stop(); return; }
+      try {
+        const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+        stream.getTracks().forEach(t => t.stop());
+        rec.start();
+      } catch(e) {
+        showToast("error", "❌", "Izin mikrofon ditolak.");
+      }
+    });
   }
 
-  micBtn.addEventListener("click", async () => {
-    if (!recognition) return;
-    if (isRecording) { isRecording = false; recognition.stop(); return; }
-    statusText.textContent = "Meminta izin mikrofon…";
-    try {
-      const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
-      stream.getTracks().forEach(t => t.stop());
-      recognition.start();
-    } catch (err) {
-      stopUI();
-      showToast("error", "❌",
-        err.name === "NotFoundError"
-          ? "Mikrofon tidak ditemukan."
-          : "Izin mikrofon ditolak. Klik ikon kunci di address bar lalu Allow.");
-    }
-  });
-
-  function stopUI() {
+  function stopMicUI(micBtn, statusBar, statusText) {
     micBtn.classList.remove("recording");
     statusBar.classList.remove("active");
     statusText.textContent = "Rekaman dihentikan";
-    setTimeout(() => {
-      statusText.textContent = "Tekan tombol record untuk mulai merekam suara";
-    }, 2500);
+    setTimeout(() => { statusText.textContent = "Tekan tombol record untuk mulai merekam"; }, 2500);
   }
 
-  pesanEl.addEventListener("input", () => {
-    charCount.textContent = pesanEl.value.length;
-    if (inputMethod === "Suara" && !isRecording) inputMethod = "Ketik";
-  });
-
-  // ── Submit ────────────────────────────────────────────────
-  async function handleSubmit(e) {
-    e.preventDefault();
-    if (!idToken) { showToast("error", "🚫", "Sesi habis. Silakan login ulang."); return; }
-    if (isRecording) { isRecording = false; recognition && recognition.stop(); }
-
-    const gasUrl = document.getElementById("gasUrl").value.trim();
-    if (!gasUrl) {
-      showToast("error", "⚠️", "Buka Pengaturan URL dan isi URL Google Apps Script terlebih dahulu!");
-      return;
-    }
-
-    const submitBtn = document.getElementById("submitBtn");
-    submitBtn.disabled = true;
-    submitBtn.textContent = "Menyimpan…";
-
-    const payload = {
-      nama:    document.getElementById("nama").value.trim(),
-      pesan:   pesanEl.value.trim(),
-      metode:  inputMethod,
-      idToken: idToken   // kirim token ke GAS untuk diverifikasi
-    };
-
-    try {
-      const formData = new URLSearchParams({ payload: JSON.stringify(payload) });
-      await fetch(gasUrl, {
-        method: "POST",
-        mode:   "no-cors",
-        body:   formData
-      });
-
-      showToast("success", "✅", "Data berhasil dikirim ke Google Sheet!");
-      pesanEl.value = "";
-      charCount.textContent = "0";
-      inputMethod = "Ketik";
-    } catch (err) {
-      showToast("error", "❌", "Gagal mengirim: " + err.message);
-    } finally {
-      submitBtn.disabled = false;
-      submitBtn.textContent = "Kirim Data";
-    }
-  }
-
-  // ── Toast ─────────────────────────────────────────────────
+  // ══════════════════════════════════════════════════════════
+  //  Toast
+  // ══════════════════════════════════════════════════════════
   let toastTimer = null;
   function showToast(type, icon, msg) {
     const toast = document.getElementById("toast");
