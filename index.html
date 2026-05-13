@@ -13,20 +13,6 @@
     h1 { font-size: 1.5rem; font-weight: 700; }
     h2 { font-size: 1.1rem; font-weight: 700; margin-bottom: 20px; padding-bottom: 10px; border-bottom: 1px solid #e0e0e0; }
 
-    /* Config */
-    .config-box { border: 1px solid #d0d0d0; border-radius: 6px; margin-bottom: 20px; overflow: hidden; }
-    .config-toggle { width: 100%; background: #f9f9f9; border: none; padding: 10px 14px; display: flex; align-items: center; justify-content: space-between; cursor: pointer; font-family: Arial, sans-serif; font-size: .75rem; font-weight: 700; letter-spacing: .05em; text-transform: uppercase; color: #444; }
-    .config-toggle:hover { background: #f0f0f0; }
-    .config-arrow { font-size: .7rem; transition: transform .2s; }
-    .config-arrow.open { transform: rotate(180deg); }
-    .config-body { background: #f9f9f9; border-top: 1px solid #d0d0d0; padding: 12px 14px; display: none; }
-    .config-body.open { display: block; }
-    .config-body label { display: block; font-size: .75rem; font-weight: 700; letter-spacing: .05em; text-transform: uppercase; color: #444; margin-bottom: 6px; margin-top: 10px; }
-    .config-body label:first-child { margin-top: 0; }
-    .config-body input { background: #fff; border: 1px solid #bbb; border-radius: 4px; color: #1a1a1a; font-family: monospace; font-size: .8rem; padding: 8px 10px; width: 100%; outline: none; }
-    .config-body input:focus { border-color: #1a1a1a; }
-    .config-hint { font-size: .75rem; color: #888; margin-top: 4px; }
-
     /* Login */
     #loginSection { text-align: center; padding: 24px 0; }
     .login-desc { font-size: .9rem; color: #555; margin-bottom: 20px; }
@@ -107,22 +93,6 @@
 <body>
 <div class="card">
   <div class="header"><h1>Performance Feedback</h1></div>
-
-  <!-- Config -->
-  <div class="config-box">
-    <button type="button" class="config-toggle" onclick="toggleConfig()">
-      <span>⚙ Pengaturan</span>
-      <span class="config-arrow" id="configArrow">▼</span>
-    </button>
-    <div class="config-body" id="configBody">
-      <label for="cfgSheetId">Spreadsheet ID</label>
-      <input type="text" id="cfgSheetId" placeholder="1BxiMVs0XRA5nFMdKvBdBZjgmUUqptlbs74OgVE2upms" />
-      <p class="config-hint">💡 Dari URL sheet: docs.google.com/spreadsheets/d/<strong>ID_INI</strong>/edit</p>
-      <label for="cfgDriveFolder">Google Drive Folder ID (untuk foto)</label>
-      <input type="text" id="cfgDriveFolder" placeholder="ID folder Drive tempat foto disimpan" />
-      <p class="config-hint">💡 Dari URL folder Drive: drive.google.com/drive/folders/<strong>ID_INI</strong></p>
-    </div>
-  </div>
 
   <!-- Login -->
   <div id="loginSection">
@@ -211,6 +181,12 @@
     "https://www.googleapis.com/auth/drive.file"
   ].join(" ");
 
+  // ══════════════════════════════════════════
+  //  ⚙️ KONFIGURASI ADMIN — hanya diubah oleh admin
+  // ══════════════════════════════════════════
+  const SPREADSHEET_ID   = "1xMEvwqFP5fmEQv7N1MDAJzb1WGMAsJ77JqV6F7EQ0PY";   // ID Google Sheet
+  const DRIVE_FOLDER_ID  = "1dTas8Fgu7Y_rqoB43e7LzeQlaw31Uv5c";  // ID folder Drive untuk foto
+
   const SHEET_KARYAWAN = "Karyawan";
   const SHEET_FEEDBACK = "Feedback";
 
@@ -223,19 +199,11 @@
   let pilihanBawahan  = null;
   let feedbackBawahan = null;
 
-  // ══════════════════════════════════════════
-  //  Config helpers
-  // ══════════════════════════════════════════
+  // Config helpers — langsung ambil dari konstanta
   const cfg = {
-    sheetId()     { return document.getElementById("cfgSheetId").value.trim(); },
-    driveFolderId(){ return document.getElementById("cfgDriveFolder").value.trim(); }
+    sheetId()      { return SPREADSHEET_ID; },
+    driveFolderId(){ return DRIVE_FOLDER_ID; }
   };
-
-  function toggleConfig() {
-    const b = document.getElementById("configBody");
-    const a = document.getElementById("configArrow");
-    a.classList.toggle("open", b.classList.toggle("open"));
-  }
 
   // ══════════════════════════════════════════
   //  Google Sign-In + OAuth Token
@@ -341,12 +309,6 @@
   //  Deteksi peran
   // ══════════════════════════════════════════
   async function loadRole() {
-    if (!cfg.sheetId()) {
-      document.getElementById("configBody").classList.add("open");
-      document.getElementById("configArrow").classList.add("open");
-      showToast("error", "⚙️", "Isi Spreadsheet ID di Pengaturan terlebih dahulu.");
-      return;
-    }
     try {
       const rows      = await sheetsGetAll(SHEET_KARYAWAN);
       const email     = currentEmail.toLowerCase().trim();
