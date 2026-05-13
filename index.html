@@ -438,7 +438,7 @@
         "", "", "Menunggu Bawahan"
       ]]);
 
-      showToast("success", "✅", "Feedback berhasil dikirim!");
+      showToast("success", "Feedback berhasil dikirim!");
       document.getElementById("selectBawahan").value = "";
       document.getElementById("pesanAtasan").value   = "";
       document.getElementById("uploadPreview").style.display = "none";
@@ -506,14 +506,14 @@
       renderFormBawahan();
     } catch(err) {
       document.getElementById("bawahanContent").innerHTML =
-        `<div class="alert alert-warning">❌ Gagal memuat: ${err.message}</div>`;
+        `<div class="alert alert-warning"> Gagal memuat: ${err.message}</div>`;
     }
   }
 
   function renderFormBawahan() {
     const cont = document.getElementById("bawahanContent");
     if (!feedbackBawahan) {
-      cont.innerHTML = `<div class="alert alert-warning">⏳ <strong>Belum ada feedback dari atasan.</strong><br>Silakan tunggu atasan Anda melakukan submit terlebih dahulu.</div>`;
+      cont.innerHTML = `<div class="alert alert-warning"><strong>Belum ada feedback dari atasan.</strong><br>Silakan tunggu atasan Anda melakukan submit terlebih dahulu.</div>`;
       return;
     }
     const f = feedbackBawahan;
@@ -545,7 +545,7 @@
 
   async function doSubmitBawahan() {
     const komitmen = document.getElementById("komitmenBawahan").value.trim();
-    if (!komitmen) { showToast("error", "⚠️", "Komitmen tidak boleh kosong."); return; }
+    if (!komitmen) { showToast("error", "Komitmen tidak boleh kosong."); return; }
     const btn = document.getElementById("submitBawahanBtn");
     btn.disabled = true; btn.innerHTML = '<span class="spinner"></span>Menyimpan…';
     try {
@@ -553,9 +553,9 @@
       // Update kolom L (Tgl Bawahan), M (Komitmen), N (Status) pada baris yang sesuai
       const row = feedbackBawahan.rowIndex;
       await sheetsUpdate(`${SHEET_FEEDBACK}!L${row}:N${row}`, [[now, komitmen, "Selesai"]]);
-      showToast("success", "✅", "Komitmen berhasil disimpan!");
+      showToast("success", "Komitmen berhasil disimpan!");
       document.getElementById("bawahanContent").innerHTML =
-        `<div class="alert alert-success">✅ <strong>Terima kasih!</strong> Proses feedback selesai.</div>`;
+        `<div class="alert alert-success"><strong>Terima kasih!</strong> Proses feedback selesai.</div>`;
     } catch(err) {
       showToast("error", "❌", err.message);
       btn.disabled = false; btn.innerHTML = "Submit Komitmen";
@@ -597,7 +597,7 @@
         const s = await navigator.mediaDevices.getUserMedia({ audio: true });
         s.getTracks().forEach(t => t.stop());
         rec.start();
-      } catch(e) { showToast("error", "❌", "Izin mikrofon ditolak."); }
+      } catch(e) { showToast("error", "Izin mikrofon ditolak."); }
     });
   }
 
