@@ -42,7 +42,19 @@
     .alert-info    { background: #e8f4fd; border: 1px solid #90caf9; color: #0d47a1; }
     .alert-success { background: #e8f5e9; border: 1px solid #a5d6a7; color: #1b5e20; }
 
-    /* Fields */
+    /* Autocomplete bawahan */
+    .autocomplete-wrap { position: relative; }
+    .autocomplete-input { width: 100%; background: #fff; border: 1px solid #bbb; border-radius: 4px; color: #1a1a1a; font-family: Arial, sans-serif; font-size: .95rem; padding: 10px 12px; outline: none; transition: border-color .15s; }
+    .autocomplete-input:focus { border-color: #1a1a1a; }
+    .autocomplete-list { position: absolute; top: 100%; left: 0; right: 0; background: #fff; border: 1px solid #1a1a1a; border-top: none; border-radius: 0 0 4px 4px; max-height: 220px; overflow-y: auto; z-index: 100; display: none; box-shadow: 0 4px 12px rgba(0,0,0,.1); }
+    .autocomplete-list.open { display: block; }
+    .autocomplete-item { padding: 10px 12px; cursor: pointer; font-size: .9rem; border-bottom: 1px solid #f0f0f0; }
+    .autocomplete-item:last-child { border-bottom: none; }
+    .autocomplete-item:hover, .autocomplete-item.selected { background: #f5f5f5; }
+    .autocomplete-item mark { background: none; font-weight: 700; color: #1a1a1a; }
+    .autocomplete-empty { padding: 10px 12px; font-size: .875rem; color: #999; }
+
+
     .field { margin-bottom: 18px; }
     label { display: block; font-size: .8rem; font-weight: 700; letter-spacing: .04em; text-transform: uppercase; color: #444; margin-bottom: 6px; }
     input[type="text"], select, textarea { width: 100%; background: #fff; border: 1px solid #bbb; border-radius: 4px; color: #1a1a1a; font-family: Arial, sans-serif; font-size: .95rem; padding: 10px 12px; outline: none; transition: border-color .15s; }
@@ -125,9 +137,15 @@
       <h2>Form Feedback Atasan</h2>
       <div class="field">
         <label>Pilih Bawahan</label>
-        <select id="selectBawahan" onchange="onPilihBawahan()">
-          <option value="">-- Pilih nama bawahan --</option>
-        </select>
+        <div class="autocomplete-wrap">
+          <input type="text" class="autocomplete-input" id="searchBawahan"
+            placeholder="Ketik nama bawahan untuk mencari…"
+            autocomplete="off"
+            oninput="onSearchBawahan(this.value)"
+            onfocus="onSearchBawahan(this.value)"
+          />
+          <div class="autocomplete-list" id="autocompleteList"></div>
+        </div>
       </div>
       <div id="fieldPredikat" class="field" style="display:none">
         <label>Predikat Kinerja</label>
@@ -148,7 +166,7 @@
         <label>Foto Bukti (wajib)</label>
         <div class="upload-area">
           <input type="file" id="inputFoto" accept="image/*" onchange="previewFoto(this)" />
-          <p class="upload-label">📷 Klik untuk pilih foto</p>
+          <p class="upload-label">Klik untuk pilih foto</p>
         </div>
         <div class="upload-preview" id="uploadPreview">
           <img id="previewImg" src="" alt="Preview" />
@@ -160,7 +178,7 @@
     <!-- TAB BAWAHAN -->
     <div class="tab-content" id="tabBawahan">
       <h2>Form Komitmen Bawahan</h2>
-      <div id="bawahanContent"><div class="alert alert-info">⏳ Memuat data…</div></div>
+      <div id="bawahanContent"><div class="alert alert-info">Memuat data...</div></div>
     </div>
   </div>
 </div>
@@ -182,10 +200,10 @@
   ].join(" ");
 
   // ══════════════════════════════════════════
-  //  ⚙️ KONFIGURASI ADMIN — hanya diubah oleh admin
+  //   KONFIGURASI ADMIN — hanya diubah oleh admin
   // ══════════════════════════════════════════
-  const SPREADSHEET_ID   = "1xMEvwqFP5fmEQv7N1MDAJzb1WGMAsJ77JqV6F7EQ0PY";   // ID Google Sheet
-  const DRIVE_FOLDER_ID  = "1dTas8Fgu7Y_rqoB43e7LzeQlaw31Uv5c";  // ID folder Drive untuk foto
+  const SPREADSHEET_ID   = "ISI_SPREADSHEET_ID_ANDA";   // ID Google Sheet
+  const DRIVE_FOLDER_ID  = "ISI_DRIVE_FOLDER_ID_ANDA";  // ID folder Drive untuk foto
 
   const SHEET_KARYAWAN = "Karyawan";
   const SHEET_FEEDBACK = "Feedback";
@@ -228,7 +246,7 @@
   function handleCredentialResponse(response) {
     const p = JSON.parse(atob(response.credential.split(".")[1]));
     if (!(p.email || "").endsWith("@" + ALLOWED_DOMAIN)) {
-      showToast("error", "🚫", "Akses ditolak. Gunakan akun @" + ALLOWED_DOMAIN);
+      showToast("error", "", "Akses ditolak. Gunakan akun @" + ALLOWED_DOMAIN);
       return;
     }
     currentEmail = p.email;
@@ -242,7 +260,7 @@
   }
 
   function handleTokenResponse(resp) {
-    if (resp.error) { showToast("error", "❌", "Gagal mendapat akses: " + resp.error); return; }
+    if (resp.error) { showToast("error", "", "Gagal mendapat akses: " + resp.error); return; }
     accessToken = resp.access_token;
     loadRole();
   }
@@ -322,7 +340,7 @@
       userRole = { isAtasan, isBawahan, rows };
       setupMainSection();
     } catch(err) {
-      showToast("error", "❌", "Gagal memuat data: " + err.message);
+      showToast("error", "", "Gagal memuat data: " + err.message);
     }
   }
 
@@ -332,7 +350,7 @@
     const { isAtasan, isBawahan } = userRole;
 
     if (!isAtasan && !isBawahan) {
-      ms.innerHTML = `<div class="alert alert-warning">⚠️ Akun Anda tidak terdaftar dalam sistem. Hubungi HR.</div>`;
+      ms.innerHTML = `<div class="alert alert-warning">Akun Anda tidak terdaftar dalam sistem. Hubungi HR.</div>`;
       return;
     }
 
@@ -369,18 +387,68 @@
         kodeUnit:     r[7] || ""
       }));
 
-    const sel = document.getElementById("selectBawahan");
-    bawahanList.forEach(b => {
-      const o = document.createElement("option");
-      o.value = b.emailBawahan;
-      o.textContent = b.namaBawahan + (b.kodeUnit ? " — " + b.kodeUnit : "");
-      sel.appendChild(o);
+    // Tutup dropdown kalau klik di luar
+    document.addEventListener("click", e => {
+      if (!e.target.closest(".autocomplete-wrap")) {
+        document.getElementById("autocompleteList").classList.remove("open");
+      }
     });
   }
 
-  function onPilihBawahan() {
-    const email = document.getElementById("selectBawahan").value;
+  function onSearchBawahan(query) {
+    const list = document.getElementById("autocompleteList");
+    const q    = query.toLowerCase().trim();
+
+    // Filter berdasarkan nama atau kode unit
+    const hasil = q === ""
+      ? bawahanList
+      : bawahanList.filter(b =>
+          b.namaBawahan.toLowerCase().includes(q) ||
+          b.kodeUnit.toLowerCase().includes(q) ||
+          b.npkBawahan.toLowerCase().includes(q)
+        );
+
+    if (hasil.length === 0) {
+      list.innerHTML = `<div class="autocomplete-empty">Tidak ada hasil untuk "${query}"</div>`;
+      list.classList.add("open");
+      return;
+    }
+
+    list.innerHTML = hasil.map(b => {
+      // Highlight teks yang cocok
+      const nama = highlight(b.namaBawahan, q);
+      const unit = b.kodeUnit ? ` <span style="color:#888;font-size:.8rem">— ${highlight(b.kodeUnit, q)}</span>` : "";
+      return `<div class="autocomplete-item" onclick="pilihBawahan('${b.emailBawahan}')">${nama}${unit}</div>`;
+    }).join("");
+
+    list.classList.add("open");
+  }
+
+  function highlight(text, query) {
+    if (!query) return text;
+    const idx = text.toLowerCase().indexOf(query.toLowerCase());
+    if (idx === -1) return text;
+    return text.substring(0, idx) +
+           "<mark>" + text.substring(idx, idx + query.length) + "</mark>" +
+           text.substring(idx + query.length);
+  }
+
+  function pilihBawahan(email) {
     pilihanBawahan = bawahanList.find(b => b.emailBawahan === email) || null;
+    if (!pilihanBawahan) return;
+
+    // Isi input dengan nama yang dipilih
+    document.getElementById("searchBawahan").value = pilihanBawahan.namaBawahan +
+      (pilihanBawahan.kodeUnit ? " — " + pilihanBawahan.kodeUnit : "");
+
+    // Tutup dropdown
+    document.getElementById("autocompleteList").classList.remove("open");
+
+    // Tampilkan field lainnya
+    onPilihBawahan();
+  }
+
+  function onPilihBawahan() {
     const show = !!pilihanBawahan;
     ["fieldPredikat","fieldPesan","fieldFoto","submitAtasanBtn"].forEach(id => {
       document.getElementById(id).style.display = show ? "" : "none";
@@ -400,11 +468,11 @@
   }
 
   async function doSubmitAtasan() {
-    if (!pilihanBawahan) { showToast("error", "⚠️", "Pilih bawahan dulu."); return; }
+    if (!pilihanBawahan) { showToast("error", "", "Pilih bawahan dulu."); return; }
     const pesan = document.getElementById("pesanAtasan").value.trim();
-    if (!pesan) { showToast("error", "⚠️", "Pesan tidak boleh kosong."); return; }
+    if (!pesan) { showToast("error", "", "Pesan tidak boleh kosong."); return; }
     const fotoFile = document.getElementById("inputFoto").files[0];
-    if (!fotoFile) { showToast("error", "⚠️", "Foto bukti wajib diupload."); return; }
+    if (!fotoFile) { showToast("error", "", "Foto bukti wajib diupload."); return; }
 
     const btn = document.getElementById("submitAtasanBtn");
     btn.disabled = true; btn.innerHTML = '<span class="spinner"></span>Menyimpan…';
@@ -438,14 +506,15 @@
         "", "", "Menunggu Bawahan"
       ]]);
 
-      showToast("success", "Feedback berhasil dikirim!");
-      document.getElementById("selectBawahan").value = "";
-      document.getElementById("pesanAtasan").value   = "";
+      showToast("success", "", "Feedback berhasil dikirim!");
+      document.getElementById("searchBawahan").value  = "";
+      document.getElementById("pesanAtasan").value    = "";
       document.getElementById("uploadPreview").style.display = "none";
-      document.getElementById("inputFoto").value     = "";
+      document.getElementById("inputFoto").value      = "";
+      pilihanBawahan = null;
       onPilihBawahan();
     } catch(err) {
-      showToast("error", "❌", err.message);
+      showToast("error", "", err.message);
     } finally {
       btn.disabled = false; btn.innerHTML = "Submit Feedback";
     }
@@ -506,7 +575,7 @@
       renderFormBawahan();
     } catch(err) {
       document.getElementById("bawahanContent").innerHTML =
-        `<div class="alert alert-warning"> Gagal memuat: ${err.message}</div>`;
+        `<div class="alert alert-warning">Gagal memuat: ${err.message}</div>`;
     }
   }
 
@@ -518,7 +587,7 @@
     }
     const f = feedbackBawahan;
     cont.innerHTML = `
-      <div class="alert alert-info">📋 Feedback dari <strong>${f.namaAtasan}</strong> — ${f.tglAtasan}</div>
+      <div class="alert alert-info">Feedback dari <strong>${f.namaAtasan}</strong> — ${f.tglAtasan}</div>
       <div class="field">
         <label>Predikat Kinerja Anda</label>
         <div class="readonly-field"><span class="predikat-badge">${f.predikat}</span></div>
@@ -527,7 +596,7 @@
         <label>Pesan dari Atasan</label>
         <div class="readonly-field" style="min-height:100px;white-space:pre-wrap">${f.pesanAtasan}</div>
       </div>
-      ${f.fotoUrl ? `<div class="field"><label>Foto Bukti</label><div class="readonly-field"><a href="${f.fotoUrl}" target="_blank">🖼 Lihat foto</a></div></div>` : ""}
+      ${f.fotoUrl ? `<div class="field"><label>Foto Bukti</label><div class="readonly-field"><a href="${f.fotoUrl}" target="_blank">Lihat foto</a></div></div>` : ""}
       <div class="field">
         <label>Komitmen Anda</label>
         <div class="textarea-wrap">
@@ -545,7 +614,7 @@
 
   async function doSubmitBawahan() {
     const komitmen = document.getElementById("komitmenBawahan").value.trim();
-    if (!komitmen) { showToast("error", "Komitmen tidak boleh kosong."); return; }
+    if (!komitmen) { showToast("error", "", "Komitmen tidak boleh kosong."); return; }
     const btn = document.getElementById("submitBawahanBtn");
     btn.disabled = true; btn.innerHTML = '<span class="spinner"></span>Menyimpan…';
     try {
@@ -553,11 +622,11 @@
       // Update kolom L (Tgl Bawahan), M (Komitmen), N (Status) pada baris yang sesuai
       const row = feedbackBawahan.rowIndex;
       await sheetsUpdate(`${SHEET_FEEDBACK}!L${row}:N${row}`, [[now, komitmen, "Selesai"]]);
-      showToast("success", "Komitmen berhasil disimpan!");
+      showToast("success", "", "Komitmen berhasil disimpan!");
       document.getElementById("bawahanContent").innerHTML =
         `<div class="alert alert-success"><strong>Terima kasih!</strong> Proses feedback selesai.</div>`;
     } catch(err) {
-      showToast("error", "❌", err.message);
+      showToast("error", "", err.message);
       btn.disabled = false; btn.innerHTML = "Submit Komitmen";
     }
   }
@@ -597,7 +666,7 @@
         const s = await navigator.mediaDevices.getUserMedia({ audio: true });
         s.getTracks().forEach(t => t.stop());
         rec.start();
-      } catch(e) { showToast("error", "Izin mikrofon ditolak."); }
+      } catch(e) { showToast("error", "", "Izin mikrofon ditolak."); }
     });
   }
 
