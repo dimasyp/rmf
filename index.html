@@ -202,8 +202,8 @@
   // ══════════════════════════════════════════
   //   KONFIGURASI ADMIN — hanya diubah oleh admin
   // ══════════════════════════════════════════
-  const SPREADSHEET_ID   = "1xMEvwqFP5fmEQv7N1MDAJzb1WGMAsJ77JqV6F7EQ0PY";   // ID Google Sheet
-  const DRIVE_FOLDER_ID  = "1dTas8Fgu7Y_rqoB43e7LzeQlaw31Uv5c";  // ID folder Drive untuk foto
+  const SPREADSHEET_ID   = "ISI_SPREADSHEET_ID_ANDA";   // ID Google Sheet
+  const DRIVE_FOLDER_ID  = "ISI_DRIVE_FOLDER_ID_ANDA";  // ID folder Drive untuk foto
 
   const SHEET_KARYAWAN = "Karyawan";
   const SHEET_FEEDBACK = "Feedback";
@@ -644,29 +644,59 @@
     const st     = document.getElementById(stId);
     if (!micBtn || !ta) return;
 
+    // Hapus listener lama supaya tidak menumpuk
+    const newBtn = micBtn.cloneNode(true);
+    micBtn.parentNode.replaceChild(newBtn, micBtn);
+
     const rec = new SR();
     rec.lang = "id-ID"; rec.continuous = true; rec.interimResults = true;
     let final = "", active = false;
 
-    rec.onstart = () => { active = true; final = ta.value; micBtn.classList.add("recording"); sb.classList.add("active"); st.textContent = "Sedang merekam… bicara sekarang"; };
+    rec.onstart = () => {
+      active = true;
+      final  = ta.value;
+      newBtn.classList.add("recording");
+      sb.classList.add("active");
+      st.textContent = "Sedang merekam… bicara sekarang";
+    };
+
     rec.onresult = ev => {
       let interim = "";
       for (let i = ev.resultIndex; i < ev.results.length; i++) {
         const t = ev.results[i][0].transcript;
-        if (ev.results[i].isFinal) final += t + " "; else interim += t;
+        if (ev.results[i].isFinal) final += t + " ";
+        else interim += t;
       }
       ta.value = final + interim;
     };
-    rec.onerror = () => { active = false; stopMicUI(micBtn, sb, st); };
-    rec.onend   = () => { if (active) { try { rec.start(); } catch(e){} } else stopMicUI(micBtn, sb, st); };
 
-    micBtn.addEventListener("click", async () => {
-      if (active) { active = false; rec.stop(); return; }
+    rec.onerror = () => {
+      active = false;
+      stopMicUI(newBtn, sb, st);
+    };
+
+    rec.onend = () => {
+      if (active) { try { rec.start(); } catch(e) {} }
+      else stopMicUI(newBtn, sb, st);
+    };
+
+    newBtn.addEventListener("click", async () => {
+      if (active) {
+        // Stop rekaman
+        active = false;
+        rec.stop();
+        return;
+      }
+      // Mulai rekaman — minta izin mic dulu
+      st.textContent = "Meminta izin mikrofon...";
       try {
         const s = await navigator.mediaDevices.getUserMedia({ audio: true });
         s.getTracks().forEach(t => t.stop());
         rec.start();
-      } catch(e) { showToast("error", "", "Izin mikrofon ditolak."); }
+      } catch(e) {
+        st.textContent = "Tekan tombol record untuk mulai merekam";
+        showToast("error", "", "Izin mikrofon ditolak.");
+      }
     });
   }
 
