@@ -42,7 +42,7 @@
     .alert-info    { background: #e8f4fd; border: 1px solid #90caf9; color: #0d47a1; }
     .alert-success { background: #e8f5e9; border: 1px solid #a5d6a7; color: #1b5e20; }
 
-    /* Autocomplete bawahan */
+    /* Autocomplete */
     .autocomplete-wrap { position: relative; }
     .autocomplete-input { width: 100%; background: #fff; border: 1px solid #bbb; border-radius: 4px; color: #1a1a1a; font-family: Arial, sans-serif; font-size: .95rem; padding: 10px 12px; outline: none; transition: border-color .15s; }
     .autocomplete-input:focus { border-color: #1a1a1a; }
@@ -50,16 +50,15 @@
     .autocomplete-list.open { display: block; }
     .autocomplete-item { padding: 10px 12px; cursor: pointer; font-size: .9rem; border-bottom: 1px solid #f0f0f0; }
     .autocomplete-item:last-child { border-bottom: none; }
-    .autocomplete-item:hover, .autocomplete-item.selected { background: #f5f5f5; }
+    .autocomplete-item:hover { background: #f5f5f5; }
     .autocomplete-item mark { background: none; font-weight: 700; color: #1a1a1a; }
     .autocomplete-empty { padding: 10px 12px; font-size: .875rem; color: #999; }
 
-
+    /* Fields */
     .field { margin-bottom: 18px; }
     label { display: block; font-size: .8rem; font-weight: 700; letter-spacing: .04em; text-transform: uppercase; color: #444; margin-bottom: 6px; }
     input[type="text"], select, textarea { width: 100%; background: #fff; border: 1px solid #bbb; border-radius: 4px; color: #1a1a1a; font-family: Arial, sans-serif; font-size: .95rem; padding: 10px 12px; outline: none; transition: border-color .15s; }
     input:focus, select:focus, textarea:focus { border-color: #1a1a1a; }
-    select { cursor: pointer; }
     textarea { resize: vertical; min-height: 130px; }
     .readonly-field { background: #f9f9f9; border: 1px solid #e0e0e0; border-radius: 4px; padding: 10px 12px; font-size: .95rem; min-height: 44px; }
     .predikat-badge { display: inline-block; padding: 3px 14px; border-radius: 4px; font-weight: 700; font-size: 1rem; background: #1a1a1a; color: #fff; }
@@ -80,15 +79,23 @@
     .status-bar.active .status-dot { opacity: 1; animation: blink .8s infinite; }
     @keyframes blink { 0%,100%{opacity:1} 50%{opacity:.2} }
 
-    /* Upload */
-    .upload-area { border: 2px dashed #bbb; border-radius: 6px; padding: 20px; text-align: center; cursor: pointer; transition: border-color .15s; position: relative; overflow: hidden; }
+    /* Upload & Kamera */
+    .foto-pilihan { display: flex; gap: 8px; margin-bottom: 10px; }
+    .upload-area { flex: 1; border: 2px dashed #bbb; border-radius: 6px; padding: 16px; text-align: center; cursor: pointer; transition: border-color .15s; position: relative; overflow: hidden; }
     .upload-area:hover { border-color: #1a1a1a; }
     .upload-area input[type="file"] { position: absolute; inset: 0; opacity: 0; cursor: pointer; width: 100%; height: 100%; }
     .upload-label { font-size: .875rem; color: #888; pointer-events: none; }
-    .upload-preview { margin-top: 10px; display: none; }
-    .upload-preview img { max-width: 100%; max-height: 200px; border-radius: 4px; border: 1px solid #e0e0e0; }
+    .btn-kamera { padding: 10px 16px; border: 2px solid #1a1a1a; border-radius: 4px; background: #fff; color: #1a1a1a; font-family: Arial, sans-serif; font-size: .875rem; font-weight: 700; cursor: pointer; white-space: nowrap; transition: background .15s; }
+    .btn-kamera:hover { background: #f5f5f5; }
+    .upload-preview { display: none; margin-top: 8px; }
+    .upload-preview img { max-width: 100%; max-height: 200px; border-radius: 4px; border: 1px solid #e0e0e0; display: block; }
+    .btn-hapus-foto { margin-top: 6px; background: none; border: 1px solid #bbb; border-radius: 4px; padding: 4px 12px; font-size: .8rem; cursor: pointer; color: #666; }
+    .btn-hapus-foto:hover { background: #f5f5f5; }
+    .kamera-section { display: none; margin-top: 8px; }
+    .kamera-section video { width: 100%; border-radius: 4px; border: 1px solid #ddd; display: block; margin-bottom: 8px; }
+    .kamera-actions { display: flex; gap: 8px; }
 
-    /* Button */
+    /* Buttons */
     .submit-btn { width: 100%; padding: 12px; border: 2px solid #1a1a1a; border-radius: 4px; font-family: Arial, sans-serif; font-size: .95rem; font-weight: 700; cursor: pointer; background: #1a1a1a; color: #fff; transition: background .15s, color .15s; margin-top: 8px; }
     .submit-btn:hover:not(:disabled) { background: #fff; color: #1a1a1a; }
     .submit-btn:disabled { opacity: .45; cursor: not-allowed; }
@@ -100,7 +107,8 @@
     .toast.show { transform: translateX(-50%) translateY(0); opacity: 1; }
     .toast.success { border-left: 4px solid #4caf50; }
     .toast.error   { border-left: 4px solid #f44336; }
-    /* Tabel status feedback */
+
+    /* Tabel status */
     .status-table { width: 100%; border-collapse: collapse; font-size: .875rem; }
     .status-table th { background: #1a1a1a; color: #fff; padding: 10px 12px; text-align: left; font-size: .75rem; letter-spacing: .04em; text-transform: uppercase; }
     .status-table td { padding: 10px 12px; border-bottom: 1px solid #e0e0e0; vertical-align: middle; }
@@ -145,6 +153,7 @@
     <!-- TAB ATASAN -->
     <div class="tab-content active" id="tabAtasan">
       <h2>Form Feedback Atasan</h2>
+
       <div class="field">
         <label>Pilih Bawahan</label>
         <div class="autocomplete-wrap">
@@ -152,15 +161,16 @@
             placeholder="Ketik nama bawahan untuk mencari…"
             autocomplete="off"
             oninput="onSearchBawahan(this.value)"
-            onfocus="onSearchBawahan(this.value)"
-          />
+            onfocus="onSearchBawahan(this.value)" />
           <div class="autocomplete-list" id="autocompleteList"></div>
         </div>
       </div>
+
       <div id="fieldPredikat" class="field" style="display:none">
         <label>Predikat Kinerja</label>
         <div class="readonly-field"><span class="predikat-badge" id="labelPredikat">-</span></div>
       </div>
+
       <div id="fieldPesan" class="field" style="display:none">
         <label>Pesan / Feedback</label>
         <div class="textarea-wrap">
@@ -172,20 +182,34 @@
           <span id="statusTextAtasan">Tekan tombol record untuk mulai merekam</span>
         </div>
       </div>
+
       <div id="fieldFoto" class="field" style="display:none">
         <label>Foto Bukti (wajib)</label>
-        <div class="upload-area">
-          <input type="file" id="inputFoto" accept="image/*" onchange="previewFoto(this)" />
-          <p class="upload-label">Klik untuk pilih foto</p>
+        <div class="foto-pilihan">
+          <div class="upload-area">
+            <input type="file" id="inputFoto" accept="image/*" onchange="previewFotoFile(this)" />
+            <p class="upload-label">Pilih dari file</p>
+          </div>
+          <button type="button" class="btn-kamera" id="btnKamera" onclick="bukaKamera()">Buka Kamera</button>
         </div>
         <div class="upload-preview" id="uploadPreview">
           <img id="previewImg" src="" alt="Preview" />
+          <button type="button" class="btn-hapus-foto" onclick="hapusFoto()">Hapus foto</button>
         </div>
+        <div class="kamera-section" id="kameraSection">
+          <video id="kameraVideo" autoplay playsinline></video>
+          <div class="kamera-actions">
+            <button type="button" class="submit-btn" style="margin:0" onclick="ambilFoto()">Ambil Foto</button>
+            <button type="button" class="btn-kamera" onclick="tutupKamera()">Batal</button>
+          </div>
+        </div>
+        <canvas id="kameraCanvas" style="display:none"></canvas>
       </div>
+
       <button class="submit-btn" id="submitAtasanBtn" style="display:none" onclick="doSubmitAtasan()">Submit Feedback</button>
 
       <!-- Status Feedback Bawahan -->
-      <div id="statusFeedbackSection" style="margin-top:32px; display:none">
+      <div id="statusFeedbackSection" style="margin-top:32px;display:none">
         <h2 style="margin-bottom:16px">Status Feedback Bawahan</h2>
         <div id="statusFeedbackList"></div>
       </div>
@@ -205,7 +229,7 @@
 
 <script>
   // ══════════════════════════════════════════
-  //  KONFIGURASI
+  //  KONFIGURASI ADMIN
   // ══════════════════════════════════════════
   const CLIENT_ID      = "350866418738-vc2g5nrrtgbrr9rnm56v2lgv3t958v9j.apps.googleusercontent.com";
   const ALLOWED_DOMAIN = "bpjsketenagakerjaan.go.id";
@@ -215,15 +239,14 @@
     "https://www.googleapis.com/auth/drive.file"
   ].join(" ");
 
-  // ══════════════════════════════════════════
-  //   KONFIGURASI ADMIN — hanya diubah oleh admin
-  // ══════════════════════════════════════════
-  const SPREADSHEET_ID   = "1xMEvwqFP5fmEQv7N1MDAJzb1WGMAsJ77JqV6F7EQ0PY";   // ID Google Sheet
-  const DRIVE_FOLDER_ID  = "1dTas8Fgu7Y_rqoB43e7LzeQlaw31Uv5c";  // ID folder Drive untuk foto
+  const SPREADSHEET_ID  = "1xMEvwqFP5fmEQv7N1MDAJzb1WGMAsJ77JqV6F7EQ0PY";
+  const DRIVE_FOLDER_ID = "1dTas8Fgu7Y_rqoB43e7LzeQlaw31Uv5c";
+  const SHEET_KARYAWAN  = "Karyawan";
+  const SHEET_FEEDBACK  = "Feedback";
 
-  const SHEET_KARYAWAN = "Karyawan";
-  const SHEET_FEEDBACK = "Feedback";
-
+  // ══════════════════════════════════════════
+  //  State
+  // ══════════════════════════════════════════
   let accessToken     = null;
   let tokenClient     = null;
   let currentEmail    = "";
@@ -232,12 +255,8 @@
   let bawahanList     = [];
   let pilihanBawahan  = null;
   let feedbackBawahan = null;
-
-  // Config helpers — langsung ambil dari konstanta
-  const cfg = {
-    sheetId()      { return SPREADSHEET_ID; },
-    driveFolderId(){ return DRIVE_FOLDER_ID; }
-  };
+  let fotoBlob        = null;
+  let kameraStream    = null;
 
   // ══════════════════════════════════════════
   //  Google Sign-In + OAuth Token
@@ -267,10 +286,10 @@
     }
     currentEmail = p.email;
     currentName  = p.name || p.email;
-    document.getElementById("userInitial").textContent = currentName.charAt(0).toUpperCase();
-    document.getElementById("userName").textContent    = currentName;
-    document.getElementById("userEmail").textContent   = currentEmail;
-    document.getElementById("userBar").style.display   = "flex";
+    document.getElementById("userInitial").textContent    = currentName.charAt(0).toUpperCase();
+    document.getElementById("userName").textContent       = currentName;
+    document.getElementById("userEmail").textContent      = currentEmail;
+    document.getElementById("userBar").style.display      = "flex";
     document.getElementById("loginSection").style.display = "none";
     tokenClient.requestAccessToken({ prompt: "" });
   }
@@ -283,6 +302,7 @@
 
   function handleLogout() {
     accessToken = null; userRole = null; currentEmail = "";
+    tutupKamera();
     google.accounts.id.disableAutoSelect();
     document.getElementById("userBar").style.display      = "none";
     document.getElementById("mainSection").style.display  = "none";
@@ -293,10 +313,8 @@
   //  Sheets API helpers
   // ══════════════════════════════════════════
   async function sheetsGet(range) {
-    const id  = cfg.sheetId();
-    if (!id) throw new Error("Spreadsheet ID belum diisi di Pengaturan.");
     const res = await fetch(
-      `https://sheets.googleapis.com/v4/spreadsheets/${id}/values/${encodeURIComponent(range)}`,
+      `https://sheets.googleapis.com/v4/spreadsheets/${SPREADSHEET_ID}/values/${encodeURIComponent(range)}`,
       { headers: { Authorization: "Bearer " + accessToken } }
     );
     if (!res.ok) {
@@ -307,52 +325,37 @@
   }
 
   async function sheetsAppend(sheetName, values) {
-    const id  = cfg.sheetId();
-    if (!id) throw new Error("Spreadsheet ID belum diisi di Pengaturan.");
     const res = await fetch(
-      `https://sheets.googleapis.com/v4/spreadsheets/${id}/values/${encodeURIComponent(sheetName + "!A1")}:append?valueInputOption=USER_ENTERED&insertDataOption=INSERT_ROWS`,
-      {
-        method:  "POST",
-        headers: { Authorization: "Bearer " + accessToken, "Content-Type": "application/json" },
-        body:    JSON.stringify({ values })
-      }
+      `https://sheets.googleapis.com/v4/spreadsheets/${SPREADSHEET_ID}/values/${encodeURIComponent(sheetName + "!A1")}:append?valueInputOption=USER_ENTERED&insertDataOption=INSERT_ROWS`,
+      { method: "POST", headers: { Authorization: "Bearer " + accessToken, "Content-Type": "application/json" }, body: JSON.stringify({ values }) }
     );
     if (!res.ok) throw new Error("Gagal simpan data: " + res.status);
     return res.json();
   }
 
   async function sheetsUpdate(range, values) {
-    const id  = cfg.sheetId();
     const res = await fetch(
-      `https://sheets.googleapis.com/v4/spreadsheets/${id}/values/${encodeURIComponent(range)}?valueInputOption=USER_ENTERED`,
-      {
-        method:  "PUT",
-        headers: { Authorization: "Bearer " + accessToken, "Content-Type": "application/json" },
-        body:    JSON.stringify({ values })
-      }
+      `https://sheets.googleapis.com/v4/spreadsheets/${SPREADSHEET_ID}/values/${encodeURIComponent(range)}?valueInputOption=USER_ENTERED`,
+      { method: "PUT", headers: { Authorization: "Bearer " + accessToken, "Content-Type": "application/json" }, body: JSON.stringify({ values }) }
     );
     if (!res.ok) throw new Error("Gagal update data: " + res.status);
     return res.json();
   }
 
-  async function sheetsGetAll(sheetName) {
-    return sheetsGet(sheetName + "!A2:Z");
-  }
+  async function sheetsGetAll(sheetName) { return sheetsGet(sheetName + "!A2:Z"); }
 
   // ══════════════════════════════════════════
   //  Deteksi peran
   // ══════════════════════════════════════════
   async function loadRole() {
     try {
-      const rows      = await sheetsGetAll(SHEET_KARYAWAN);
-      const email     = currentEmail.toLowerCase().trim();
+      const rows  = await sheetsGetAll(SHEET_KARYAWAN);
+      const email = currentEmail.toLowerCase().trim();
       let isAtasan = false, isBawahan = false;
-
       rows.forEach(r => {
         if ((r[2] || "").toLowerCase().trim() === email) isAtasan  = true;
         if ((r[5] || "").toLowerCase().trim() === email) isBawahan = true;
       });
-
       userRole = { isAtasan, isBawahan, rows };
       setupMainSection();
     } catch(err) {
@@ -374,18 +377,18 @@
     document.getElementById("tabBawahanBtn").style.display = isBawahan ? "" : "none";
     document.getElementById("tabsBar").style.display       = (isAtasan && isBawahan) ? "flex" : "none";
 
-    if (isAtasan)             { switchTab("atasan"); loadBawahanList(); loadStatusFeedback(); }
-    if (isBawahan)            { loadFeedbackBawahan(); }
-    if (!isAtasan && isBawahan) switchTab("bawahan");
+    if (isAtasan)              { switchTab("atasan"); loadBawahanList(); loadStatusFeedback(); }
+    if (isBawahan)             { loadFeedbackBawahan(); }
+    if (!isAtasan && isBawahan){ switchTab("bawahan"); }
 
     setupMic("micBtnAtasan", "pesanAtasan", "statusBarAtasan", "statusTextAtasan");
   }
 
   function switchTab(tab) {
-    document.getElementById("tabAtasan").classList.toggle("active",  tab === "atasan");
-    document.getElementById("tabBawahan").classList.toggle("active", tab === "bawahan");
-    document.getElementById("tabAtasanBtn").classList.toggle("active",  tab === "atasan");
-    document.getElementById("tabBawahanBtn").classList.toggle("active", tab === "bawahan");
+    document.getElementById("tabAtasan").classList.toggle("active",    tab === "atasan");
+    document.getElementById("tabBawahan").classList.toggle("active",   tab === "bawahan");
+    document.getElementById("tabAtasanBtn").classList.toggle("active", tab === "atasan");
+    document.getElementById("tabBawahanBtn").classList.toggle("active",tab === "bawahan");
   }
 
   // ══════════════════════════════════════════
@@ -394,143 +397,95 @@
   async function loadStatusFeedback() {
     const section = document.getElementById("statusFeedbackSection");
     const listEl  = document.getElementById("statusFeedbackList");
-
     try {
-      // Ambil semua feedback
       const feedbacks = await sheetsGetAll(SHEET_FEEDBACK);
       const email     = currentEmail.toLowerCase().trim();
-
-      // Buat map: emailBawahan → status terbaru
       const statusMap = {};
       feedbacks.forEach(r => {
         const eA = (r[4] || "").toLowerCase().trim();
         const eB = (r[7] || "").toLowerCase().trim();
         if (eA === email) {
-          // Ambil status terbaru saja (bisa ada lebih dari 1 jika tahun beda)
-          statusMap[eB] = {
-            status:      r[13] || "Belum",
-            tgl:         r[1]  || "-",
-            namaBawahan: r[6]  || ""
-          };
+          statusMap[eB] = { status: r[13] || "Belum", tgl: r[1] || "-" };
         }
       });
 
-      // Gabungkan dengan daftar bawahan — yang belum di atas
       const rows = bawahanList.map(b => {
-        const key  = b.emailBawahan.toLowerCase().trim();
-        const info = statusMap[key];
+        const info = statusMap[b.emailBawahan.toLowerCase().trim()];
         return {
-          namaBawahan:  b.namaBawahan,
-          kodeUnit:     b.kodeUnit,
-          status:       info ? info.status : "Belum",
-          tgl:          info ? info.tgl    : "-"
+          namaBawahan: b.namaBawahan,
+          kodeUnit:    b.kodeUnit,
+          status:      info ? info.status : "Belum",
+          tgl:         info ? info.tgl    : "-"
         };
       });
 
-      // Urutan: Belum → Menunggu Bawahan → Selesai
       const urutan = { "Belum": 0, "Menunggu Bawahan": 1, "Selesai": 2 };
       rows.sort((a, b) => (urutan[a.status] ?? 0) - (urutan[b.status] ?? 0));
 
-      if (rows.length === 0) {
-        listEl.innerHTML = `<div class="alert alert-info">Tidak ada data bawahan.</div>`;
-      } else {
-        listEl.innerHTML = `
-          <table class="status-table">
-            <thead>
+      listEl.innerHTML = rows.length === 0
+        ? `<div class="alert alert-info">Tidak ada data bawahan.</div>`
+        : `<table class="status-table">
+            <thead><tr><th>Nama Bawahan</th><th>Kode Unit</th><th>Status</th><th>Tgl Feedback</th></tr></thead>
+            <tbody>${rows.map(r => `
               <tr>
-                <th>Nama Bawahan</th>
-                <th>Kode Unit</th>
-                <th>Status</th>
-                <th>Tgl Feedback</th>
-              </tr>
-            </thead>
-            <tbody>
-              ${rows.map(r => `
-                <tr>
-                  <td>${r.namaBawahan}</td>
-                  <td>${r.kodeUnit}</td>
-                  <td>${badgeStatus(r.status)}</td>
-                  <td style="color:#666;font-size:.8rem">${formatTgl(r.tgl)}</td>
-                </tr>
-              `).join("")}
+                <td>${r.namaBawahan}</td>
+                <td>${r.kodeUnit}</td>
+                <td>${badgeStatus(r.status)}</td>
+                <td style="color:#666;font-size:.8rem">${formatTgl(r.tgl)}</td>
+              </tr>`).join("")}
             </tbody>
           </table>`;
-      }
-
       section.style.display = "block";
-
     } catch(err) {
       listEl.innerHTML = `<div class="alert alert-warning">Gagal memuat status: ${err.message}</div>`;
       section.style.display = "block";
     }
   }
 
-  function badgeStatus(status) {
-    if (status === "Selesai")
-      return `<span class="badge badge-selesai">Selesai</span>`;
-    if (status === "Menunggu Bawahan")
-      return `<span class="badge badge-menunggu">Menunggu Bawahan</span>`;
+  function badgeStatus(s) {
+    if (s === "Selesai")         return `<span class="badge badge-selesai">Selesai</span>`;
+    if (s === "Menunggu Bawahan") return `<span class="badge badge-menunggu">Menunggu Bawahan</span>`;
     return `<span class="badge badge-belum">Belum</span>`;
   }
 
   function formatTgl(tgl) {
     if (!tgl || tgl === "-") return "-";
-    try {
-      return new Date(tgl).toLocaleDateString("id-ID", {
-        day: "numeric", month: "short", year: "numeric"
-      });
-    } catch(e) { return tgl; }
+    try { return new Date(tgl).toLocaleDateString("id-ID", { day: "numeric", month: "short", year: "numeric" }); }
+    catch(e) { return tgl; }
   }
 
   // ══════════════════════════════════════════
-  //  Form Atasan
+  //  Autocomplete bawahan
   // ══════════════════════════════════════════
   function loadBawahanList() {
     const email = currentEmail.toLowerCase().trim();
     bawahanList = (userRole.rows || [])
       .filter(r => (r[2] || "").toLowerCase().trim() === email)
-      .map(r => ({
-        npkBawahan:   r[3] || "",
-        namaBawahan:  r[4] || "",
-        emailBawahan: r[5] || "",
-        predikat:     r[6] || "",
-        kodeUnit:     r[7] || ""
-      }));
+      .map(r => ({ npkBawahan: r[3]||"", namaBawahan: r[4]||"", emailBawahan: r[5]||"", predikat: r[6]||"", kodeUnit: r[7]||"" }));
 
-    // Tutup dropdown kalau klik di luar
     document.addEventListener("click", e => {
-      if (!e.target.closest(".autocomplete-wrap")) {
+      if (!e.target.closest(".autocomplete-wrap"))
         document.getElementById("autocompleteList").classList.remove("open");
-      }
     });
   }
 
   function onSearchBawahan(query) {
     const list = document.getElementById("autocompleteList");
     const q    = query.toLowerCase().trim();
-
-    // Filter berdasarkan nama atau kode unit
-    const hasil = q === ""
-      ? bawahanList
-      : bawahanList.filter(b =>
-          b.namaBawahan.toLowerCase().includes(q) ||
-          b.kodeUnit.toLowerCase().includes(q) ||
-          b.npkBawahan.toLowerCase().includes(q)
-        );
-
+    const hasil = q === "" ? bawahanList : bawahanList.filter(b =>
+      b.namaBawahan.toLowerCase().includes(q) ||
+      b.kodeUnit.toLowerCase().includes(q) ||
+      b.npkBawahan.toLowerCase().includes(q)
+    );
     if (hasil.length === 0) {
       list.innerHTML = `<div class="autocomplete-empty">Tidak ada hasil untuk "${query}"</div>`;
-      list.classList.add("open");
-      return;
+    } else {
+      list.innerHTML = hasil.map(b => {
+        const nama = highlight(b.namaBawahan, q);
+        const unit = b.kodeUnit ? ` <span style="color:#888;font-size:.8rem">— ${highlight(b.kodeUnit, q)}</span>` : "";
+        return `<div class="autocomplete-item" onclick="pilihBawahan('${b.emailBawahan}')">${nama}${unit}</div>`;
+      }).join("");
     }
-
-    list.innerHTML = hasil.map(b => {
-      // Highlight teks yang cocok
-      const nama = highlight(b.namaBawahan, q);
-      const unit = b.kodeUnit ? ` <span style="color:#888;font-size:.8rem">— ${highlight(b.kodeUnit, q)}</span>` : "";
-      return `<div class="autocomplete-item" onclick="pilihBawahan('${b.emailBawahan}')">${nama}${unit}</div>`;
-    }).join("");
-
     list.classList.add("open");
   }
 
@@ -538,23 +493,14 @@
     if (!query) return text;
     const idx = text.toLowerCase().indexOf(query.toLowerCase());
     if (idx === -1) return text;
-    return text.substring(0, idx) +
-           "<mark>" + text.substring(idx, idx + query.length) + "</mark>" +
-           text.substring(idx + query.length);
+    return text.substring(0, idx) + "<mark>" + text.substring(idx, idx + query.length) + "</mark>" + text.substring(idx + query.length);
   }
 
   function pilihBawahan(email) {
     pilihanBawahan = bawahanList.find(b => b.emailBawahan === email) || null;
     if (!pilihanBawahan) return;
-
-    // Isi input dengan nama yang dipilih
-    document.getElementById("searchBawahan").value = pilihanBawahan.namaBawahan +
-      (pilihanBawahan.kodeUnit ? " — " + pilihanBawahan.kodeUnit : "");
-
-    // Tutup dropdown
+    document.getElementById("searchBawahan").value = pilihanBawahan.namaBawahan + (pilihanBawahan.kodeUnit ? " — " + pilihanBawahan.kodeUnit : "");
     document.getElementById("autocompleteList").classList.remove("open");
-
-    // Tampilkan field lainnya
     onPilihBawahan();
   }
 
@@ -566,29 +512,75 @@
     if (pilihanBawahan) document.getElementById("labelPredikat").textContent = pilihanBawahan.predikat || "-";
   }
 
-  function previewFoto(input) {
+  // ══════════════════════════════════════════
+  //  Kamera & Upload Foto
+  // ══════════════════════════════════════════
+  function previewFotoFile(input) {
     const file = input.files[0];
     if (!file) return;
+    fotoBlob = file;
     const reader = new FileReader();
-    reader.onload = e => {
-      document.getElementById("previewImg").src = e.target.result;
-      document.getElementById("uploadPreview").style.display = "block";
-    };
+    reader.onload = e => tampilPreview(e.target.result);
     reader.readAsDataURL(file);
   }
 
+  async function bukaKamera() {
+    try {
+      kameraStream = await navigator.mediaDevices.getUserMedia({ video: true, audio: false });
+      document.getElementById("kameraVideo").srcObject = kameraStream;
+      document.getElementById("kameraSection").style.display = "block";
+      document.getElementById("btnKamera").style.display     = "none";
+      document.getElementById("uploadPreview").style.display = "none";
+    } catch(e) {
+      showToast("error", "", "Tidak bisa mengakses kamera: " + e.message);
+    }
+  }
+
+  function ambilFoto() {
+    const video  = document.getElementById("kameraVideo");
+    const canvas = document.getElementById("kameraCanvas");
+    canvas.width  = video.videoWidth;
+    canvas.height = video.videoHeight;
+    canvas.getContext("2d").drawImage(video, 0, 0);
+    canvas.toBlob(blob => {
+      fotoBlob = blob;
+      tampilPreview(canvas.toDataURL("image/jpeg"));
+      tutupKamera();
+    }, "image/jpeg", 0.85);
+  }
+
+  function tutupKamera() {
+    if (kameraStream) { kameraStream.getTracks().forEach(t => t.stop()); kameraStream = null; }
+    document.getElementById("kameraSection").style.display = "none";
+    document.getElementById("btnKamera").style.display     = "inline-block";
+  }
+
+  function tampilPreview(src) {
+    document.getElementById("previewImg").src            = src;
+    document.getElementById("uploadPreview").style.display = "block";
+  }
+
+  function hapusFoto() {
+    fotoBlob = null;
+    document.getElementById("previewImg").src             = "";
+    document.getElementById("uploadPreview").style.display = "none";
+    document.getElementById("inputFoto").value            = "";
+  }
+
+  // ══════════════════════════════════════════
+  //  Submit Atasan
+  // ══════════════════════════════════════════
   async function doSubmitAtasan() {
     if (!pilihanBawahan) { showToast("error", "", "Pilih bawahan dulu."); return; }
     const pesan = document.getElementById("pesanAtasan").value.trim();
-    if (!pesan) { showToast("error", "", "Pesan tidak boleh kosong."); return; }
-    const fotoFile = document.getElementById("inputFoto").files[0];
-    if (!fotoFile) { showToast("error", "", "Foto bukti wajib diupload."); return; }
+    if (!pesan)    { showToast("error", "", "Pesan tidak boleh kosong."); return; }
+    if (!fotoBlob) { showToast("error", "", "Foto bukti wajib diupload atau diambil dari kamera."); return; }
 
     const btn = document.getElementById("submitAtasanBtn");
-    btn.disabled = true; btn.innerHTML = '<span class="spinner"></span>Menyimpan…';
+    btn.disabled = true; btn.innerHTML = '<span class="spinner"></span>Menyimpan...';
 
     try {
-      // Cek duplikat aktif
+      // Cek duplikat
       const feedbacks = await sheetsGetAll(SHEET_FEEDBACK);
       const duplikat  = feedbacks.some(r =>
         (r[7] || "").toLowerCase().trim() === pilihanBawahan.emailBawahan.toLowerCase() &&
@@ -596,20 +588,18 @@
       );
       if (duplikat) throw new Error("Masih ada feedback aktif untuk bawahan ini yang belum diselesaikan.");
 
-      // Upload foto ke Drive
-      const fotoUrl = await uploadFotoDrive(fotoFile);
+      // Upload foto
+      const fotoUrl = await uploadFotoDrive(fotoBlob);
 
-      // Cari NPK & nama atasan dari sheet karyawan
-      const email = currentEmail.toLowerCase().trim();
+      // Data atasan dari sheet karyawan
+      const email     = currentEmail.toLowerCase().trim();
       const atasanRow = (userRole.rows || []).find(r => (r[2] || "").toLowerCase().trim() === email);
       const npkAtasan  = atasanRow ? atasanRow[0] : "";
       const namaAtasan = atasanRow ? atasanRow[1] : currentName;
-
-      const idSesi = "SESI-" + Date.now();
-      const now    = new Date().toLocaleString("id-ID", { timeZone: "Asia/Jakarta" });
+      const now        = new Date().toLocaleString("id-ID", { timeZone: "Asia/Jakarta" });
 
       await sheetsAppend(SHEET_FEEDBACK, [[
-        idSesi, now,
+        "SESI-" + Date.now(), now,
         npkAtasan, namaAtasan, currentEmail,
         pilihanBawahan.npkBawahan, pilihanBawahan.namaBawahan, pilihanBawahan.emailBawahan,
         pilihanBawahan.predikat, pesan, fotoUrl,
@@ -617,13 +607,12 @@
       ]]);
 
       showToast("success", "", "Feedback berhasil dikirim!");
-      document.getElementById("searchBawahan").value  = "";
-      document.getElementById("pesanAtasan").value    = "";
-      document.getElementById("uploadPreview").style.display = "none";
-      document.getElementById("inputFoto").value      = "";
+      document.getElementById("searchBawahan").value = "";
+      document.getElementById("pesanAtasan").value   = "";
+      hapusFoto();
       pilihanBawahan = null;
       onPilihBawahan();
-      loadStatusFeedback(); // refresh tabel status
+      loadStatusFeedback();
     } catch(err) {
       showToast("error", "", err.message);
     } finally {
@@ -632,28 +621,22 @@
   }
 
   async function uploadFotoDrive(file) {
-    const folderId = cfg.driveFolderId();
-    const metadata = { name: "feedback_" + Date.now() + "_" + file.name };
-    if (folderId) metadata.parents = [folderId];
-
+    const metadata = { name: "feedback_" + Date.now() };
+    if (DRIVE_FOLDER_ID) metadata.parents = [DRIVE_FOLDER_ID];
     const form = new FormData();
     form.append("metadata", new Blob([JSON.stringify(metadata)], { type: "application/json" }));
     form.append("file", file);
-
     const res = await fetch(
       "https://www.googleapis.com/upload/drive/v3/files?uploadType=multipart&fields=id,webViewLink",
       { method: "POST", headers: { Authorization: "Bearer " + accessToken }, body: form }
     );
     if (!res.ok) throw new Error("Gagal upload foto: " + res.status);
     const data = await res.json();
-
-    // Set file agar bisa diakses siapapun di organisasi
     await fetch(`https://www.googleapis.com/drive/v3/files/${data.id}/permissions`, {
       method: "POST",
       headers: { Authorization: "Bearer " + accessToken, "Content-Type": "application/json" },
       body: JSON.stringify({ role: "reader", type: "domain", domain: ALLOWED_DOMAIN })
     });
-
     return data.webViewLink || `https://drive.google.com/file/d/${data.id}/view`;
   }
 
@@ -664,20 +647,10 @@
     try {
       const rows  = await sheetsGetAll(SHEET_FEEDBACK);
       const email = currentEmail.toLowerCase().trim();
-
-      // Cari feedback terbaru dengan status "Menunggu Bawahan"
       for (let i = rows.length - 1; i >= 0; i--) {
         const r = rows[i];
         if ((r[7] || "").toLowerCase().trim() === email && (r[13] || "") === "Menunggu Bawahan") {
-          feedbackBawahan = {
-            rowIndex:    i + 2, // +2 karena header di baris 1, data mulai baris 2
-            idSesi:      r[0],
-            namaAtasan:  r[3],
-            tglAtasan:   r[1],
-            predikat:    r[8],
-            pesanAtasan: r[9],
-            fotoUrl:     r[10]
-          };
+          feedbackBawahan = { rowIndex: i + 2, idSesi: r[0], namaAtasan: r[3], tglAtasan: r[1], predikat: r[8], pesanAtasan: r[9], fotoUrl: r[10] };
           renderFormBawahan();
           return;
         }
@@ -727,10 +700,9 @@
     const komitmen = document.getElementById("komitmenBawahan").value.trim();
     if (!komitmen) { showToast("error", "", "Komitmen tidak boleh kosong."); return; }
     const btn = document.getElementById("submitBawahanBtn");
-    btn.disabled = true; btn.innerHTML = '<span class="spinner"></span>Menyimpan…';
+    btn.disabled = true; btn.innerHTML = '<span class="spinner"></span>Menyimpan...';
     try {
       const now = new Date().toLocaleString("id-ID", { timeZone: "Asia/Jakarta" });
-      // Update kolom L (Tgl Bawahan), M (Komitmen), N (Status) pada baris yang sesuai
       const row = feedbackBawahan.rowIndex;
       await sheetsUpdate(`${SHEET_FEEDBACK}!L${row}:N${row}`, [[now, komitmen, "Selesai"]]);
       showToast("success", "", "Komitmen berhasil disimpan!");
@@ -755,7 +727,6 @@
     const st     = document.getElementById(stId);
     if (!micBtn || !ta) return;
 
-    // Hapus listener lama supaya tidak menumpuk
     const newBtn = micBtn.cloneNode(true);
     micBtn.parentNode.replaceChild(newBtn, micBtn);
 
@@ -763,42 +734,20 @@
     rec.lang = "id-ID"; rec.continuous = true; rec.interimResults = true;
     let final = "", active = false;
 
-    rec.onstart = () => {
-      active = true;
-      final  = ta.value;
-      newBtn.classList.add("recording");
-      sb.classList.add("active");
-      st.textContent = "Sedang merekam… bicara sekarang";
-    };
-
+    rec.onstart = () => { active = true; final = ta.value; newBtn.classList.add("recording"); sb.classList.add("active"); st.textContent = "Sedang merekam… bicara sekarang"; };
     rec.onresult = ev => {
       let interim = "";
       for (let i = ev.resultIndex; i < ev.results.length; i++) {
         const t = ev.results[i][0].transcript;
-        if (ev.results[i].isFinal) final += t + " ";
-        else interim += t;
+        if (ev.results[i].isFinal) final += t + " "; else interim += t;
       }
       ta.value = final + interim;
     };
-
-    rec.onerror = () => {
-      active = false;
-      stopMicUI(newBtn, sb, st);
-    };
-
-    rec.onend = () => {
-      if (active) { try { rec.start(); } catch(e) {} }
-      else stopMicUI(newBtn, sb, st);
-    };
+    rec.onerror = () => { active = false; stopMicUI(newBtn, sb, st); };
+    rec.onend   = () => { if (active) { try { rec.start(); } catch(e){} } else stopMicUI(newBtn, sb, st); };
 
     newBtn.addEventListener("click", async () => {
-      if (active) {
-        // Stop rekaman
-        active = false;
-        rec.stop();
-        return;
-      }
-      // Mulai rekaman — minta izin mic dulu
+      if (active) { active = false; rec.stop(); return; }
       st.textContent = "Meminta izin mikrofon...";
       try {
         const s = await navigator.mediaDevices.getUserMedia({ audio: true });
