@@ -108,7 +108,29 @@
     .toast.success { border-left: 4px solid #4caf50; }
     .toast.error   { border-left: 4px solid #f44336; }
 
-    /* Tabel status */
+    /* Persetujuan bawahan */
+    .agreement-wrap { display: flex; gap: 12px; margin-top: 4px; }
+    .agreement-btn {
+      flex: 1; padding: 14px 12px; border: 2px solid #d0d0d0;
+      border-radius: 8px; background: #fff; cursor: pointer;
+      font-family: Arial, sans-serif; font-size: .95rem; font-weight: 700;
+      display: flex; align-items: center; justify-content: center; gap: 8px;
+      transition: all .2s; color: #666;
+    }
+    .agreement-btn:hover { border-color: #1a1a1a; color: #1a1a1a; }
+    .agreement-icon { font-size: 1rem; font-weight: 900; }
+    .agreement-btn-active-yes {
+      background: #e8f5e9; border-color: #4caf50;
+      color: #1b5e20 !important;
+    }
+    .agreement-btn-active-no {
+      background: #fff8e1; border-color: #ffc107;
+      color: #7a5c00 !important;
+    }
+    .agreement-btn-inactive { opacity: .5; }
+    .agreement-hint { font-size: .8rem; margin-top: 8px; min-height: 18px; }
+
+
     .status-table { width: 100%; border-collapse: collapse; font-size: .875rem; }
     .status-table th { background: #1a1a1a; color: #fff; padding: 10px 12px; text-align: left; font-size: .75rem; letter-spacing: .04em; text-transform: uppercase; }
     .status-table td { padding: 10px 12px; border-bottom: 1px solid #e0e0e0; vertical-align: middle; }
@@ -358,6 +380,9 @@
         if (res.status === 401) {
           tokenClient.requestAccessToken({ prompt: "" });
           throw new Error("Sesi expired, silakan coba lagi.");
+        }
+        if (res.status === 403) {
+          throw new Error("Akses ditolak. Pastikan spreadsheet sudah di-share ke domain BPJS Ketenagakerjaan.");
         }
 
         if (!res.ok) {
@@ -745,15 +770,38 @@
     const f = feedbackBawahan;
     cont.innerHTML = `
       <div class="alert alert-info">Feedback dari <strong>${f.namaAtasan}</strong> — ${f.tglAtasan}</div>
+
       <div class="field">
         <label>Predikat Kinerja Anda</label>
         <div class="readonly-field"><span class="predikat-badge">${f.predikat}</span></div>
       </div>
+
       <div class="field">
         <label>Pesan dari Atasan</label>
         <div class="readonly-field" style="min-height:100px;white-space:pre-wrap">${f.pesanAtasan}</div>
       </div>
-      ${f.fotoUrl ? `<div class="field"><label>Foto Bukti</label><div class="readonly-field"><a href="${f.fotoUrl}" target="_blank">Lihat foto</a></div></div>` : ""}
+
+      ${f.fotoUrl ? `
+      <div class="field">
+        <label>Foto Bukti</label>
+        <div class="readonly-field"><a href="${f.fotoUrl}" target="_blank">Lihat foto</a></div>
+      </div>` : ""}
+
+      <div class="field">
+        <label>Apakah Anda setuju dengan feedback di atas?</label>
+        <div class="agreement-wrap">
+          <button type="button" class="agreement-btn" id="btnSetuju" onclick="pilihPersetujuan('Setuju')">
+            <span class="agreement-icon">✓</span>
+            <span>Setuju</span>
+          </button>
+          <button type="button" class="agreement-btn" id="btnTidakSetuju" onclick="pilihPersetujuan('Tidak Setuju')">
+            <span class="agreement-icon">✕</span>
+            <span>Tidak Setuju</span>
+          </button>
+        </div>
+        <p class="agreement-hint" id="agreementHint"></p>
+      </div>
+
       <div class="field">
         <label>Komitmen Anda</label>
         <div class="textarea-wrap">
@@ -765,11 +813,39 @@
           <span id="statusTextBawahan">Tekan tombol record untuk mulai merekam</span>
         </div>
       </div>
+
       <button class="submit-btn" id="submitBawahanBtn" onclick="doSubmitBawahan()">Submit Komitmen</button>`;
+
     setupMic("micBtnBawahan", "komitmenBawahan", "statusBarBawahan", "statusTextBawahan");
   }
 
+  let persetujuanBawahan = null;
+
+  function pilihPersetujuan(nilai) {
+    persetujuanBawahan = nilai;
+    const btnSetuju      = document.getElementById("btnSetuju");
+    const btnTidakSetuju = document.getElementById("btnTidakSetuju");
+    const hint           = document.getElementById("agreementHint");
+    const komitmenArea   = document.getElementById("komitmenBawahan");
+
+    btnSetuju.classList.toggle("agreement-btn-active-yes", nilai === "Setuju");
+    btnSetuju.classList.toggle("agreement-btn-inactive",   nilai !== "Setuju");
+    btnTidakSetuju.classList.toggle("agreement-btn-active-no", nilai === "Tidak Setuju");
+    btnTidakSetuju.classList.toggle("agreement-btn-inactive",  nilai !== "Tidak Setuju");
+
+    if (nilai === "Setuju") {
+      hint.textContent          = "Anda menyetujui feedback yang diberikan atasan.";
+      hint.style.color          = "#1b5e20";
+      komitmenArea.placeholder  = "Tuliskan komitmen Anda ke depannya setelah menerima feedback ini…";
+    } else {
+      hint.textContent          = "Anda tidak menyetujui feedback. Tuliskan tanggapan Anda di bawah.";
+      hint.style.color          = "#7a5c00";
+      komitmenArea.placeholder  = "Tuliskan tanggapan atau alasan Anda tidak menyetujui feedback ini…";
+    }
+  }
+
   async function doSubmitBawahan() {
+    if (!persetujuanBawahan) { showToast("error", "", "Pilih persetujuan terlebih dahulu (Setuju / Tidak Setuju)."); return; }
     const komitmen = document.getElementById("komitmenBawahan").value.trim();
     if (!komitmen) { showToast("error", "", "Komitmen tidak boleh kosong."); return; }
     const btn = document.getElementById("submitBawahanBtn");
@@ -777,8 +853,10 @@
     try {
       const now = new Date().toLocaleString("id-ID", { timeZone: "Asia/Jakarta" });
       const row = feedbackBawahan.rowIndex;
-      await sheetsUpdate(`${SHEET_FEEDBACK}!L${row}:N${row}`, [[now, komitmen, "Selesai"]]);
+      // Update kolom L (Tgl Bawahan), M (Komitmen), N (Status), O (Persetujuan)
+      await sheetsUpdate(`${SHEET_FEEDBACK}!L${row}:O${row}`, [[now, komitmen, "Selesai", persetujuanBawahan]]);
       showToast("success", "", "Komitmen berhasil disimpan!");
+      persetujuanBawahan = null;
       document.getElementById("bawahanContent").innerHTML =
         `<div class="alert alert-success"><strong>Terima kasih!</strong> Proses feedback selesai.</div>`;
     } catch(err) {
