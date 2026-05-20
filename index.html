@@ -302,6 +302,8 @@
 
   function handleLogout() {
     accessToken = null; userRole = null; currentEmail = "";
+    // Bersihkan semua cache saat logout
+    Object.keys(cache).forEach(k => delete cache[k]);
     tutupKamera();
     google.accounts.id.disableAutoSelect();
     document.getElementById("userBar").style.display      = "none";
@@ -310,35 +312,106 @@
   }
 
   // ══════════════════════════════════════════
-  //  Sheets API helpers
+  //  Cache & Retry Config
   // ══════════════════════════════════════════
+  const CACHE_TTL_MS   = 5 * 60 * 1000; // cache berlaku 5 menit
+  const RETRY_MAX      = 3;              // maksimal 3x retry
+  const RETRY_DELAY_MS = 2000;           // jeda awal 2 detik (exponential)
+  const cache          = {};             // { key: { data, expiredAt } }
+
+  function cacheSet(key, data) {
+    cache[key] = { data, expiredAt: Date.now() + CACHE_TTL_MS };
+  }
+
+  function cacheGet(key) {
+    const entry = cache[key];
+    if (!entry) return null;
+    if (Date.now() > entry.expiredAt) { delete cache[key]; return null; }
+    return entry.data;
+  }
+
+  function cacheInvalidate(key) { delete cache[key]; }
+
+  // Tunggu sejumlah ms
+  function sleep(ms) { return new Promise(r => setTimeout(r, ms)); }
+
+  // ══════════════════════════════════════════
+  //  Sheets API helpers (dengan cache & retry)
+  // ══════════════════════════════════════════
+
+  // Fetch dengan retry otomatis (exponential backoff)
+  async function fetchWithRetry(url, options = {}, isWrite = false) {
+    let lastErr;
+    for (let attempt = 1; attempt <= RETRY_MAX; attempt++) {
+      try {
+        const res = await fetch(url, options);
+
+        // Rate limit → tunggu lalu retry
+        if (res.status === 429) {
+          const wait = RETRY_DELAY_MS * attempt;
+          showToast("error", "", `Permintaan terlalu banyak, mencoba ulang dalam ${wait/1000} detik...`);
+          await sleep(wait);
+          continue;
+        }
+
+        // Token expired → refresh dulu
+        if (res.status === 401) {
+          tokenClient.requestAccessToken({ prompt: "" });
+          throw new Error("Sesi expired, silakan coba lagi.");
+        }
+
+        if (!res.ok) {
+          const errJson = await res.json().catch(() => ({}));
+          throw new Error(errJson?.error?.message || "API error: " + res.status);
+        }
+
+        return res;
+      } catch(err) {
+        lastErr = err;
+        // Jangan retry kalau bukan network/rate error
+        if (err.message.includes("Sesi expired")) throw err;
+        if (attempt < RETRY_MAX) {
+          const wait = RETRY_DELAY_MS * attempt;
+          await sleep(wait);
+        }
+      }
+    }
+    throw lastErr || new Error("Gagal setelah " + RETRY_MAX + "x percobaan.");
+  }
+
   async function sheetsGet(range) {
-    const res = await fetch(
+    const cacheKey = "sheets:" + range;
+    const cached   = cacheGet(cacheKey);
+    if (cached) return cached;
+
+    const res  = await fetchWithRetry(
       `https://sheets.googleapis.com/v4/spreadsheets/${SPREADSHEET_ID}/values/${encodeURIComponent(range)}`,
       { headers: { Authorization: "Bearer " + accessToken } }
     );
-    if (!res.ok) {
-      if (res.status === 401) { tokenClient.requestAccessToken({ prompt: "" }); throw new Error("Sesi expired, silakan coba lagi."); }
-      throw new Error("Sheets API error: " + res.status);
-    }
-    return (await res.json()).values || [];
+    const data = (await res.json()).values || [];
+    cacheSet(cacheKey, data);
+    return data;
   }
 
   async function sheetsAppend(sheetName, values) {
-    const res = await fetch(
+    const res = await fetchWithRetry(
       `https://sheets.googleapis.com/v4/spreadsheets/${SPREADSHEET_ID}/values/${encodeURIComponent(sheetName + "!A1")}:append?valueInputOption=USER_ENTERED&insertDataOption=INSERT_ROWS`,
-      { method: "POST", headers: { Authorization: "Bearer " + accessToken, "Content-Type": "application/json" }, body: JSON.stringify({ values }) }
+      { method: "POST", headers: { Authorization: "Bearer " + accessToken, "Content-Type": "application/json" }, body: JSON.stringify({ values }) },
+      true
     );
-    if (!res.ok) throw new Error("Gagal simpan data: " + res.status);
+    // Invalidate cache sheet yang baru saja ditulis
+    cacheInvalidate("sheets:" + sheetName + "!A2:Z");
     return res.json();
   }
 
   async function sheetsUpdate(range, values) {
-    const res = await fetch(
+    const res = await fetchWithRetry(
       `https://sheets.googleapis.com/v4/spreadsheets/${SPREADSHEET_ID}/values/${encodeURIComponent(range)}?valueInputOption=USER_ENTERED`,
-      { method: "PUT", headers: { Authorization: "Bearer " + accessToken, "Content-Type": "application/json" }, body: JSON.stringify({ values }) }
+      { method: "PUT", headers: { Authorization: "Bearer " + accessToken, "Content-Type": "application/json" }, body: JSON.stringify({ values }) },
+      true
     );
-    if (!res.ok) throw new Error("Gagal update data: " + res.status);
+    // Invalidate cache feedback setelah update
+    cacheInvalidate("sheets:" + SHEET_FEEDBACK + "!A2:Z");
     return res.json();
   }
 
