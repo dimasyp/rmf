@@ -108,7 +108,21 @@
     .toast.success { border-left: 4px solid #4caf50; }
     .toast.error   { border-left: 4px solid #f44336; }
 
-    /* Persetujuan bawahan */
+    /* Aturan main & disclaimer */
+    .info-box { border: 1px solid #d0d0d0; border-radius: 6px; margin-bottom: 24px; overflow: hidden; }
+    .info-box-header { width: 100%; background: #f9f9f9; border: none; padding: 12px 16px; display: flex; align-items: center; justify-content: space-between; cursor: pointer; font-family: Arial, sans-serif; font-size: .85rem; font-weight: 700; color: #1a1a1a; text-align: left; }
+    .info-box-header:hover { background: #f0f0f0; }
+    .info-box-arrow { font-size: .7rem; transition: transform .2s; flex-shrink: 0; }
+    .info-box-arrow.open { transform: rotate(180deg); }
+    .info-box-body { background: #fff; border-top: 1px solid #e0e0e0; padding: 16px; display: none; font-size: .875rem; line-height: 1.7; }
+    .info-box-body.open { display: block; }
+    .info-box-body ol { padding-left: 20px; }
+    .info-box-body ol li { margin-bottom: 6px; color: #444; }
+    .info-box-body strong { color: #1a1a1a; }
+    .disclaimer-box { background: #f9f9f9; border: 1px solid #d0d0d0; border-left: 4px solid #1a1a1a; border-radius: 6px; padding: 14px 16px; margin-bottom: 20px; font-size: .875rem; line-height: 1.7; color: #444; }
+    .disclaimer-box strong { color: #1a1a1a; display: block; margin-bottom: 4px; }
+
+
     .agreement-wrap { display: flex; gap: 12px; margin-top: 4px; }
     .agreement-btn {
       flex: 1; padding: 14px 12px; border: 2px solid #d0d0d0;
@@ -175,6 +189,25 @@
     <!-- TAB ATASAN -->
     <div class="tab-content active" id="tabAtasan">
       <h2>Form Feedback Atasan</h2>
+
+      <!-- Aturan Main -->
+      <div class="info-box">
+        <button type="button" class="info-box-header" onclick="toggleInfoBox('aturanMain', 'arrowAturan')">
+          <span>Panduan Pelaksanaan Feedback Kinerja</span>
+          <span class="info-box-arrow" id="arrowAturan">▼</span>
+        </button>
+        <div class="info-box-body" id="aturanMain">
+          <ol>
+            <li>Feedback kinerja dilaksanakan <strong>minimal 1 (satu) kali dalam setahun</strong> oleh setiap atasan kepada seluruh bawahannya.</li>
+            <li>Pelaksanaan feedback dilakukan secara <strong>tatap muka langsung</strong> antara atasan dan bawahan.</li>
+            <li>Atasan wajib menyampaikan <strong>predikat kinerja</strong> beserta umpan balik yang konstruktif dan objektif.</li>
+            <li>Isi feedback bersifat <strong>rahasia</strong> dan hanya dapat diakses oleh atasan, bawahan yang bersangkutan, dan HCP.</li>
+            <li>Setelah atasan submit, bawahan wajib memberikan <strong>tanggapan dan komitmen</strong> pada sesi yang sama.</li>
+            <li>Foto bukti pelaksanaan sesi feedback <strong>wajib dilampirkan</strong> sebagai bukti kehadiran kedua pihak.</li>
+            <li>Data yang telah disubmit <strong>tidak dapat diubah</strong>. Pastikan seluruh isian sudah benar sebelum submit.</li>
+          </ol>
+        </div>
+      </div>
 
       <div class="field">
         <label>Pilih Bawahan</label>
@@ -279,6 +312,12 @@
   let feedbackBawahan = null;
   let fotoBlob        = null;
   let kameraStream    = null;
+
+  function toggleInfoBox(bodyId, arrowId) {
+    const body  = document.getElementById(bodyId);
+    const arrow = document.getElementById(arrowId);
+    arrow.classList.toggle("open", body.classList.toggle("open"));
+  }
 
   // ══════════════════════════════════════════
   //  Google Sign-In + OAuth Token
@@ -769,6 +808,13 @@
     }
     const f = feedbackBawahan;
     cont.innerHTML = `
+      <div class="disclaimer-box">
+        <strong>Pernyataan Kerahasiaan</strong>
+        Tanggapan dan komitmen yang Anda tuliskan pada form ini bersifat <strong>rahasia</strong>.
+        Isian Anda <strong>tidak akan disampaikan kepada atasan</strong> dan hanya digunakan oleh
+        HCP (Human Capital & People) untuk kepentingan monitoring dan pengembangan karyawan.
+      </div>
+
       <div class="alert alert-info">Feedback dari <strong>${f.namaAtasan}</strong> — ${f.tglAtasan}</div>
 
       <div class="field">
